@@ -1,120 +1,75 @@
-# Ferramenta de Análise de Probabilidade — Jogos de Cassino
+# Analisador de Crash
 
-`index.html` — página única, sem dependências externas (basta abrir no navegador).
+Ferramenta de probabilidade para jogos de crash (Aviator e similares), em duas partes:
 
-Ferramenta **educativa de probabilidade**. Ela calcula a matemática dos jogos; ela **não prevê resultados**
-e não existe configuração em que passe a prever. Todo jogo analisado tem valor esperado negativo para quem aposta.
+- `index.html` — analisador, página única sem dependências externas
+- `extensao/` — extensão de navegador que coleta o histórico automaticamente ([detalhes](extensao/README.md))
+
+Ela calcula a matemática do jogo e mede se um histórico bate com o RTP declarado. Ela **não prevê
+resultados**: em crash o multiplicador é fixado por hash antes de a rodada abrir, e nenhuma rodada
+carrega informação sobre a próxima.
 
 ## Abas
 
 | Aba | Conteúdo |
 |---|---|
-| **Jogo de crash** | Distribuição dos multiplicadores, comparação entre alvos de saída, estimativa do RTP real a partir de um histórico de rodadas, simulador de sessão e verificador provably fair |
-| **Dá para prever?** | Cadeia de sementes com SHA-256 rodando na página, laboratório para testar qualquer regra de previsão contra um controle aleatório, demonstração de dragagem de dados com validação fora da amostra, e a barreira criptográfica em números |
-| **Passa de 2x?** | Probabilidade condicional medida com intervalo de Wilson em dezenas de contextos, qui-quadrado de independência, informação mútua em bits com teste de permutação, e o cálculo de quantas rodadas seriam necessárias para validar um previsor |
-| **Jogos e apostas** | Vantagem da casa, RTP e pagamento justo de cada aposta de roleta (europeia, francesa, americana), craps, bacará, blackjack, caça-níquel e loteria |
-| **Simulador e risco de ruína** | Monte Carlo com distribuição completa das sessões, mais a fórmula fechada de gambler's ruin |
-| **Analisar histórico** | Qui-quadrado de aderência, teste de corridas, maior sequência idêntica e correlação serial |
-| **Sistemas de aposta** | Martingale, D'Alembert e Fibonacci simulados lado a lado com a aposta fixa |
-| **Comparar jogos** | Todas as apostas ordenadas por vantagem da casa |
+| **Previsão** | A previsão para a próxima rodada e o placar que mede quanto ela vale |
+| **O jogo** | Distribuição dos multiplicadores, alvos de saída e simulador de sessão |
+| **Testes** | Estimativa do RTP real, probabilidade condicional, laboratório de regras e dragagem de dados |
+| **Verificação** | Cadeia de sementes com SHA-256 ao vivo e a barreira criptográfica em números |
 
-## Sobre analisar o crash de uma casa específica
+## Sobre a previsão
 
-Não é possível afirmar o RTP do crash de um site a partir do nome dele. A Spribe permite que **cada operador
-configure o Aviator em 97%, 96% ou 94%**, e outros provedores fazem o mesmo. O número real fica no painel de
-informações do próprio jogo, e sua publicação é obrigatória.
+O previsor ótimo de Bayes para "a próxima passa de 2x?" é **constante**: como P(≥2x) = RTP/2 = 48,5%
+é menor que 50%, a previsão que maximiza acerto é sempre "abaixo", em toda rodada. Ela acerta 51,5%
+das vezes — mais que qualquer regra que varie com o histórico, porque não há informação no histórico
+para aproveitar.
 
-A ferramenta trata isso de duas formas:
+O desfecho prático: **o previsor ótimo nunca manda apostar**, porque 48,5% está abaixo dos 50%
+necessários para o ponto de equilíbrio.
 
-1. **Informe o RTP declarado** e toda a análise sai exata para aquela configuração.
-2. **Cole um histórico de rodadas** copiado do painel de resultados do jogo. A ferramenta estima o RTP real
-   daquela instância e testa a aderência ao valor declarado — essa é a análise da casa específica, feita com
-   dados dela.
+Você pode plugar qualquer regra própria (inclusive uma expressão livre sobre as rodadas anteriores).
+Todo previsor é ajustado na primeira metade do histórico e avaliado na segunda, com placar de acerto,
+Brier, log loss e banca — sem essa separação, qualquer regra parece boa.
 
-Toda a informação sobre o RTP está na proporção de rodadas que não passam de 1.00x: condicionada a não haver
-crash imediato, a forma da distribuição não depende do RTP. Daí a margem de erro do estimador: com 1.000
-rodadas fica em torno de ±1 ponto percentual; com 5.000, ±0,5.
+## O modelo
 
-## Sobre prever o resultado de um crash
+Uma linha gera tudo: `P(multiplicador ≥ t) = RTP / t`. Dela seguem, todas verificadas contra simulação
+de 2 milhões de rodadas:
 
-A premissa está certa: existe um algoritmo determinístico e o multiplicador já está fixado antes de a rodada
-abrir — ele sai de `SHA-256(semente do servidor + sementes dos jogadores)`. O que não se sustenta é a conclusão.
-Determinístico não é previsível: para antecipar a rodada seguinte é preciso a semente do servidor, publicada só
-depois dela. Sem a semente, prever exige uma pré-imagem de SHA-256.
-
-Como a cadeia é montada de trás para frente, `semente(k) = SHA-256(semente(k+1))`: verificar para trás custa um
-hash, e avançar um passo custa cerca de 2²⁵⁶. Em vez de afirmar isso, a aba **Dá para prever?** dá o aparato para
-testar:
-
-- A cadeia de sementes é gerada e verificada ao vivo, com SHA-256 implementado na própria página
-- O laboratório roda qualquer regra (inclusive uma expressão sua) contra centenas de bases comprovadamente
-  aleatórias, mostrando em que percentil dessa distribuição nula a regra caiu
-- A demonstração de dragagem procura padrões numa base gerada sem memória e valida os achados fora da amostra:
-  as 8 melhores regras costumam render entre +6% e +33% no treino e inverter o sinal em dados novos
-
-A parte previsível de um crash é a **distribuição**, não o resultado.
-
-## "A próxima rodada passa de 2x?"
-
-Tem resposta fechada: `P(X ≥ 2) = RTP/2`, que é 48,5% a 97% de RTP. Não é média de longo prazo — é a
-probabilidade exata de cada rodada, e condicionar em qualquer coisa já ocorrida devolve o mesmo número.
-
-Três resultados derivados, todos conferidos por simulação:
-
-- **Ponto de equilíbrio.** Sacar em *t* só compensa acima de `1/t`. Em 2x isso é 50%, contra 48,5% reais —
-  a distância de 1,5 ponto percentual *é* a vantagem da casa vista de outro ângulo.
-- **Barreira relativa constante.** Um previsor precisa ser `(1−RTP)/RTP` melhor que o acaso para apenas
-  empatar: **3,09%**, idêntico em qualquer alvo, porque a razão entre `1/t` e `RTP/t` não depende de *t*.
-- **Custo de validação.** Detectar essa vantagem mínima em 2x com 80% de poder exige **8.716 rodadas**
-  (verificado por simulação: poder observado de 79,4%), cerca de 60 horas de jogo contínuo. Em 10x, 77 mil
-  rodadas.
-
-A medição empírica testa 4 famílias de contexto (resultado anterior, sequência abaixo do alvo, quantas das
-últimas 5 passaram, média das últimas 10) com intervalo de Wilson, qui-quadrado de independência e informação
-mútua com teste de permutação. Em 100 mil rodadas, a informação mútua medida entre o passado e "passa de 2x"
-foi de 1,3×10⁻⁵ bits contra 0,999 bit de incerteza — **menor que o viés que o próprio estimador tem sob
-independência pura** (3,6×10⁻⁵ bits). A informação medida fica abaixo do piso de ruído do método.
-
-## O modelo de crash
-
-Uma única linha gera tudo: `P(multiplicador ≥ t) = RTP / t`.
-
-Dela seguem, e todas foram verificadas contra simulação de 2 milhões de rodadas:
-
-- `P(sucesso ao sacar em t) = RTP/t`
 - `EV = t × (RTP/t) − 1 = RTP − 1` — **constante**: o alvo de saída se cancela
 - desvio padrão do retorno = `√(RTP × (t − RTP))` — cresce com o alvo
 - mediana do multiplicador = `2 × RTP`
 - `1/X` é Uniforme(0,1) nas rodadas sem crash imediato — base do teste de Kolmogorov-Smirnov
 - a **média** do multiplicador não existe (cauda de Pareto com expoente 1)
+- ponto de equilíbrio `1/t`; a barreira relativa para um previsor é `(1−RTP)/RTP` = **3,09%**,
+  idêntica em qualquer alvo
+- detectar essa barreira em 2x com 80% de poder exige **8.716 rodadas** (poder observado: 79,4%)
 
-O resultado central: sacar em 1.05x e sacar em 100x têm exatamente a mesma perda esperada. O alvo escolhe o
-formato do risco, não o tamanho da perda.
+## RTP
+
+O RTP real é definido pelo operador — a Spribe permite 97%, 96% ou 94% no Aviator. Informe o valor do
+painel do jogo, ou estime a partir do histórico na aba *Testes*. Toda a informação sobre o RTP está na
+proporção de rodadas que não passam de 1.00x: com 1.000 rodadas a margem fica em ±1 ponto percentual;
+com 5.000, ±0,5.
 
 ## Verificação
 
-Os motores foram conferidos contra valores publicados e, quando havia caminho independente, contra força bruta
-ou simulação:
+Motores conferidos contra valores publicados e, onde havia caminho independente, contra simulação:
 
-- Roleta europeia 2,7027% / francesa (la partage) 1,3514% / americana 5,2632% e cesto 7,8947%
-- Craps: pass line 1,414%, don't pass 1,364%, odds 0%, any seven 16,67%
-- Bacará 8 baralhos: banker 1,058%, player 1,235%, empate 8:1 14,36%
-- Mega-Sena: 1 em 50.063.860 (sena), 154.518 (quina), 2.332 (quadra)
-- RTP do caça-níquel: fórmula idêntica à enumeração das 39.304 combinações da fita
-- Risco de ruína: fórmula fechada 0,25325 contra 0,25301 em 200 mil sessões simuladas
-- Crash: EV constante em todos os 10 alvos; estimador de RTP recupera 97%, 96% e 94% a partir de históricos
-  gerados, e sinaliza divergência quando um histórico de 94% é testado contra 97% declarado
-- Sequência típica de perdas: recorrência exata conferida contra simulação (92 e 126 rodadas em alvos de 50x
-  e 100x, onde a aproximação usual log(n·p)/log(1/q) erra para 69 e 68 e ainda inverte a ordem)
-- SHA-256 da página conferido contra `node:crypto` em 309 casos (texto, blocos de borda em 55/56/63/64 bytes,
-  UTF-8 e hashes aleatórios)
-- Valor-p binomial bilateral calibrado sob a hipótese nula: 4,3% a 5,1% de rejeição ao nível de 5%
-- Intervalo de Wilson: cobertura de 93,2% / 95,5% / 94,5% para n = 30 / 100 / 1000 (nominal 95%)
-- Cálculo de tamanho de amostra: poder observado de 79,4% para alvo de 80%
-- Veredito da análise condicional corrigido por Bonferroni e calibrado em bases aleatórias (limpo em 5 de 6),
-  mantendo sensibilidade a dependências injetadas de 2%, 5% e 10%
-- Qui-quadrado, Kolmogorov-Smirnov, normal padrão e cauda binomial conferidos em pontos críticos tabelados
+- EV constante nos 10 alvos; estimador de RTP recupera 97%, 96% e 94% de históricos gerados, e sinaliza
+  divergência quando um histórico de 94% é testado contra 97% declarado
+- SHA-256 da página conferido contra `node:crypto` em 309 casos
+- Valor-p binomial bilateral: 4,3% a 5,1% de rejeição ao nível de 5% sob a hipótese nula
+- Intervalo de Wilson: cobertura de 93,2% / 95,5% / 94,5% para n = 30 / 100 / 1000
+- Tamanho de amostra: poder observado de 79,4% para alvo de 80%
+- Sequência típica de perdas por recorrência exata (a aproximação usual erra 92→69 e 126→68, e inverte
+  a ordem)
+- Coleta da extensão: reconstrução exata de 320 rodadas a partir de uma janela deslizante de 20,
+  lendo a cada 1, 3 e 10 rodadas
+- Informação mútua entre passado e "passa de 2x" em 100 mil rodadas: 1,3×10⁻⁵ bits contra 0,999 bit de
+  incerteza — abaixo do próprio viés do estimador sob independência (3,6×10⁻⁵)
 
 ## Ajuda
 
-Se o jogo deixou de ser diversão: **CVV — 188** (ligação gratuita, 24 horas) e Jogadores Anônimos Brasil.
+Se o jogo deixou de ser diversão: **CVV — 188** (gratuito, 24 horas) e Jogadores Anônimos Brasil.
