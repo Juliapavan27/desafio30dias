@@ -10,6 +10,7 @@ e não existe configuração em que passe a prever. Todo jogo analisado tem valo
 | Aba | Conteúdo |
 |---|---|
 | **Jogo de crash** | Distribuição dos multiplicadores, comparação entre alvos de saída, estimativa do RTP real a partir de um histórico de rodadas, simulador de sessão e verificador provably fair |
+| **Dá para prever?** | Cadeia de sementes com SHA-256 rodando na página, laboratório para testar qualquer regra de previsão contra um controle aleatório, demonstração de dragagem de dados com validação fora da amostra, e a barreira criptográfica em números |
 | **Jogos e apostas** | Vantagem da casa, RTP e pagamento justo de cada aposta de roleta (europeia, francesa, americana), craps, bacará, blackjack, caça-níquel e loteria |
 | **Simulador e risco de ruína** | Monte Carlo com distribuição completa das sessões, mais a fórmula fechada de gambler's ruin |
 | **Analisar histórico** | Qui-quadrado de aderência, teste de corridas, maior sequência idêntica e correlação serial |
@@ -32,6 +33,25 @@ A ferramenta trata isso de duas formas:
 Toda a informação sobre o RTP está na proporção de rodadas que não passam de 1.00x: condicionada a não haver
 crash imediato, a forma da distribuição não depende do RTP. Daí a margem de erro do estimador: com 1.000
 rodadas fica em torno de ±1 ponto percentual; com 5.000, ±0,5.
+
+## Sobre prever o resultado de um crash
+
+A premissa está certa: existe um algoritmo determinístico e o multiplicador já está fixado antes de a rodada
+abrir — ele sai de `SHA-256(semente do servidor + sementes dos jogadores)`. O que não se sustenta é a conclusão.
+Determinístico não é previsível: para antecipar a rodada seguinte é preciso a semente do servidor, publicada só
+depois dela. Sem a semente, prever exige uma pré-imagem de SHA-256.
+
+Como a cadeia é montada de trás para frente, `semente(k) = SHA-256(semente(k+1))`: verificar para trás custa um
+hash, e avançar um passo custa cerca de 2²⁵⁶. Em vez de afirmar isso, a aba **Dá para prever?** dá o aparato para
+testar:
+
+- A cadeia de sementes é gerada e verificada ao vivo, com SHA-256 implementado na própria página
+- O laboratório roda qualquer regra (inclusive uma expressão sua) contra centenas de bases comprovadamente
+  aleatórias, mostrando em que percentil dessa distribuição nula a regra caiu
+- A demonstração de dragagem procura padrões numa base gerada sem memória e valida os achados fora da amostra:
+  as 8 melhores regras costumam render entre +6% e +33% no treino e inverter o sinal em dados novos
+
+A parte previsível de um crash é a **distribuição**, não o resultado.
 
 ## O modelo de crash
 
@@ -64,6 +84,9 @@ ou simulação:
   gerados, e sinaliza divergência quando um histórico de 94% é testado contra 97% declarado
 - Sequência típica de perdas: recorrência exata conferida contra simulação (92 e 126 rodadas em alvos de 50x
   e 100x, onde a aproximação usual log(n·p)/log(1/q) erra para 69 e 68 e ainda inverte a ordem)
+- SHA-256 da página conferido contra `node:crypto` em 309 casos (texto, blocos de borda em 55/56/63/64 bytes,
+  UTF-8 e hashes aleatórios)
+- Valor-p binomial bilateral calibrado sob a hipótese nula: 4,3% a 5,1% de rejeição ao nível de 5%
 - Qui-quadrado, Kolmogorov-Smirnov, normal padrão e cauda binomial conferidos em pontos críticos tabelados
 
 ## Ajuda

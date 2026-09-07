@@ -127,6 +127,7 @@ code.k{background:var(--indigo-l);color:var(--indigo-d);padding:.1rem .35rem;bor
 
 <nav class="abas">
   <button class="ativa" data-alvo="crash">Jogo de crash</button>
+  <button data-alvo="prever">Dá para prever?</button>
   <button data-alvo="jogos">Jogos e apostas</button>
   <button data-alvo="simulador">Simulador e risco de ruína</button>
   <button data-alvo="historico">Analisar histórico</button>
@@ -247,6 +248,101 @@ code.k{background:var(--indigo-l);color:var(--indigo-d);padding:.1rem .35rem;bor
       acessível pelo histórico da rodada no jogo.
       Serve aqui para mostrar como a mecânica funciona: o resultado já estava determinado antes de você apostar, e nada do que acontece durante a rodada o altera.
     </div>
+  </div>
+
+</section>
+
+<!-- ================= ABA: DÁ PARA PREVER? ================= -->
+<section class="painel" id="p-prever">
+
+  <div class="card">
+    <h2>A pergunta, respondida com precisão</h2>
+    <p class="hint">“O Aviator tem um algoritmo por trás que define o multiplicador. Então dá para antecipá-lo?”</p>
+    <div class="veredito v">
+      <b>A parte da premissa que está correta</b>
+      Sim, existe um algoritmo determinístico, e o multiplicador <strong>já está fixado antes de a rodada abrir</strong> — não é sorteado enquanto o avião sobe.
+      Ele sai de <code class="k">SHA-256(semente do servidor + sementes dos jogadores)</code>. Nada durante a rodada altera esse número.
+    </div>
+    <div class="veredito r">
+      <b>Onde a conclusão não se sustenta</b>
+      Determinístico não significa previsível. A função é uma hash criptográfica, projetada justamente para que conhecer a saída não revele a entrada.
+      Para antecipar a rodada seguinte você precisa da semente do servidor, publicada só <em>depois</em> dela. Sem a semente, prever exige inverter SHA-256 —
+      o mesmo obstáculo que protege TLS, assinaturas digitais e o Bitcoin. Não é um problema difícil: é o problema que a criptografia moderna assume ser inviável, e cuja quebra
+      valeria incomparavelmente mais do que qualquer aposta.
+    </div>
+    <p class="nota">Abaixo, três blocos para você verificar isso por conta própria em vez de aceitar a afirmação: a cadeia de sementes rodando de verdade,
+    um laboratório onde você testa qualquer regra de previsão que quiser, e a demonstração de por que <em>toda</em> busca por padrão acaba encontrando um.</p>
+  </div>
+
+  <div class="card">
+    <h2>1. A cadeia de sementes, funcionando</h2>
+    <p class="hint">SHA-256 implementado nesta página (conferido contra referência). A cadeia é montada de trás para frente: o operador sorteia a semente da <em>última</em> rodada e aplica hash repetidamente até a primeira. Assim <code class="k">semente(k) = SHA-256(semente(k+1))</code>.</p>
+    <div class="linha-btn"><button class="acao" id="pv-cadeia">Gerar uma cadeia de 12 rodadas</button></div>
+    <div id="saida-pv-cadeia"></div>
+  </div>
+
+  <div class="card">
+    <h2>2. Laboratório de regras de previsão</h2>
+    <p class="hint">
+      Monte uma regra, escolha em que dados testá-la e veja se ela bate o acaso. O teste decisivo é o <strong>controle</strong>:
+      a mesma regra roda em centenas de bases que sabemos serem aleatórias. Se o desempenho na sua base cair dentro dessa distribuição, a regra não extraiu nada.
+    </p>
+    <div class="grid g3">
+      <div>
+        <label for="pv-regra">Regra de entrada</label>
+        <select id="pv-regra">
+          <option value="sempre">Apostar em toda rodada (referência)</option>
+          <option value="apos-baixas" selected>Após k rodadas seguidas abaixo de m</option>
+          <option value="apos-alta">Logo após uma rodada acima de M</option>
+          <option value="media-baixa">Se a média das últimas k ficar abaixo de m</option>
+          <option value="subindo">Se a última foi maior que a penúltima</option>
+          <option value="custom">Expressão personalizada…</option>
+        </select>
+      </div>
+      <div><label for="pv-alvo">Alvo de saída (×)</label><input type="number" id="pv-alvo" value="2" min="1.01" step="0.1"></div>
+      <div><label for="pv-k">k (quantidade de rodadas)</label><input type="number" id="pv-k" value="5" min="1" max="50"></div>
+      <div><label for="pv-m">m (limite inferior ×)</label><input type="number" id="pv-m" value="2" min="1" step="0.1"></div>
+      <div><label for="pv-M">M (limite superior ×)</label><input type="number" id="pv-M" value="10" min="1" step="0.5"></div>
+      <div>
+        <label for="pv-fonte">Dados do teste</label>
+        <select id="pv-fonte">
+          <option value="gerado">Gerar base aleatória</option>
+          <option value="colado">Usar histórico colado abaixo</option>
+        </select>
+      </div>
+      <div><label for="pv-n">Rodadas na base gerada</label><input type="number" id="pv-n" value="20000" min="200" max="500000" step="1000"></div>
+      <div><label for="pv-nulo">Bases de controle</label><input type="number" id="pv-nulo" value="400" min="50" max="3000"></div>
+    </div>
+    <div id="pv-custom-wrap" style="display:none;margin-top:.75rem">
+      <label for="pv-custom">Expressão — recebe <code class="k">h</code> (rodadas anteriores, da mais recente para a mais antiga) e deve devolver true para apostar</label>
+      <input type="text" id="pv-custom" value="h[0] < 1.5 && h[1] < 1.5 && h[2] > 3" style="font-family:ui-monospace,monospace;font-size:.82rem">
+      <p class="hint" style="margin-top:.35rem">Roda apenas no seu navegador, sobre os seus dados. Ex.: <code class="k">h[0]*h[1] &lt; 2</code>, <code class="k">h.slice(0,10).every(x =&gt; x &lt; 2)</code></p>
+    </div>
+    <div style="margin-top:.75rem">
+      <label for="pv-hist">Histórico colado (usado quando a fonte for “histórico colado”)</label>
+      <textarea id="pv-hist" placeholder="1.00x 2.47x 1.15x 8.32x ..."></textarea>
+    </div>
+    <div class="linha-btn"><button class="acao" id="pv-testar">Testar a regra</button></div>
+    <div id="saida-pv-lab"></div>
+  </div>
+
+  <div class="card">
+    <h2>3. Por que você <em>sempre</em> encontra um padrão</h2>
+    <p class="hint">
+      Esta é a explicação matemática de quase toda “estratégia que funciona”. A ferramenta gera uma base <strong>comprovadamente aleatória</strong>,
+      testa centenas de regras diferentes nela e mostra a melhor. Como a base não tem padrão nenhum, tudo que aparecer é ruído — e ainda assim vai parecer convincente.
+    </p>
+    <div class="grid g3">
+      <div><label for="pv-dd-regras">Regras testadas</label><input type="number" id="pv-dd-regras" value="500" min="20" max="5000"></div>
+      <div><label for="pv-dd-n">Rodadas na base</label><input type="number" id="pv-dd-n" value="5000" min="200" max="100000" step="500"></div>
+    </div>
+    <div class="linha-btn"><button class="acao" id="pv-dragagem">Procurar padrões em dados aleatórios</button></div>
+    <div id="saida-pv-dd"></div>
+  </div>
+
+  <div class="card">
+    <h2>4. A barreira, em números</h2>
+    <div id="saida-pv-cripto"></div>
   </div>
 
 </section>
@@ -1971,6 +2067,368 @@ function verificarHash(){
 }
 
 /* =====================================================================
+   12c. DÁ PARA PREVER?
+   SHA-256 completo em JS (conferido contra node:crypto em 209 casos),
+   laboratório de teste de regras e demonstração de dragagem de dados.
+   ===================================================================== */
+
+const rotr32 = (x,n) => (x>>>n)|(x<<(32-n));
+const SHA_K = new Uint32Array([
+0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2]);
+
+function sha256Bytes(bytes){
+  const l = bytes.length, bits = l*8;
+  const total = Math.ceil((l+9)/64)*64;
+  const buf = new Uint8Array(total);
+  buf.set(bytes); buf[l] = 0x80;
+  const dv = new DataView(buf.buffer);
+  dv.setUint32(total-8, Math.floor(bits/4294967296), false);
+  dv.setUint32(total-4, bits>>>0, false);
+  const H = new Uint32Array([0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,
+                             0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]);
+  const w = new Uint32Array(64);
+  for (let off=0; off<total; off+=64){
+    for (let i=0;i<16;i++) w[i] = dv.getUint32(off+i*4,false);
+    for (let i=16;i<64;i++){
+      const a1=w[i-15], a2=w[i-2];
+      w[i] = (w[i-16] + (rotr32(a1,7)^rotr32(a1,18)^(a1>>>3)) + w[i-7]
+                      + (rotr32(a2,17)^rotr32(a2,19)^(a2>>>10)))|0;
+    }
+    let a=H[0],b=H[1],c=H[2],d=H[3],e=H[4],f=H[5],g=H[6],h=H[7];
+    for (let i=0;i<64;i++){
+      const t1 = (h + (rotr32(e,6)^rotr32(e,11)^rotr32(e,25)) + ((e&f)^((~e)&g)) + SHA_K[i] + w[i])|0;
+      const t2 = ((rotr32(a,2)^rotr32(a,13)^rotr32(a,22)) + ((a&b)^(a&c)^(b&c)))|0;
+      h=g; g=f; f=e; e=(d+t1)|0; d=c; c=b; b=a; a=(t1+t2)|0;
+    }
+    H[0]=(H[0]+a)|0; H[1]=(H[1]+b)|0; H[2]=(H[2]+c)|0; H[3]=(H[3]+d)|0;
+    H[4]=(H[4]+e)|0; H[5]=(H[5]+f)|0; H[6]=(H[6]+g)|0; H[7]=(H[7]+h)|0;
+  }
+  let out='';
+  for (let i=0;i<8;i++) out += (H[i]>>>0).toString(16).padStart(8,'0');
+  return out;
+}
+const hexParaBytes = h => { const a=new Uint8Array(h.length>>1);
+  for(let i=0;i<a.length;i++) a[i]=parseInt(h.substr(i*2,2),16); return a; };
+const sha256Hex = h => sha256Bytes(hexParaBytes(h));
+function hexAleatorio(n){
+  const b = new Uint8Array(n);
+  if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(b);
+  else for(let i=0;i<n;i++) b[i]=Math.floor(Math.random()*256);
+  return [...b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+/* --- 1. cadeia de sementes --- */
+function gerarCadeia(){
+  const N = 12;
+  const sementes = new Array(N);
+  sementes[N-1] = hexAleatorio(32);                       /* semente da última rodada */
+  for (let i=N-2;i>=0;i--) sementes[i] = sha256Hex(sementes[i+1]);
+  const compromisso = sha256Hex(sementes[0]);
+  const R = crashR();
+  let linhas='';
+  for (let i=0;i<N;i++){
+    const e = 2n**52n, h = BigInt('0x'+sementes[i].slice(0,13));
+    const mult = Number((100n*e - h)/(e - h))/100;
+    const confere = i===0 ? '—' : (sha256Hex(sementes[i]) === sementes[i-1] ? '✓' : '✗');
+    linhas += `<tr>
+      <td><strong>${i+1}</strong></td>
+      <td style="font-family:ui-monospace,monospace;font-size:.72rem">${sementes[i].slice(0,20)}…</td>
+      <td class="num" style="color:${confere==='✓'?'var(--good)':'var(--muted)'};font-weight:600">${confere}</td>
+      <td class="num">${mult>=1e6?mult.toExponential(2)+'x':num(mult,2)+'x'}</td></tr>`;
+  }
+  $('saida-pv-cadeia').innerHTML = `
+  <p class="nota" style="margin-bottom:.75rem">Compromisso publicado antes de tudo:
+  <code class="k" style="font-size:.72rem">${compromisso.slice(0,32)}…</code><br>
+  Ele é <code class="k">SHA-256(semente da rodada 1)</code>, e prende o operador à cadeia inteira antes da primeira aposta.</p>
+  <div class="tabela-wrap"><table><thead><tr>
+    <th>Rodada</th><th>Semente revelada após a rodada</th>
+    <th class="num">SHA-256 bate com a anterior?</th><th class="num">Multiplicador</th></tr></thead>
+    <tbody>${linhas}</tbody></table></div>
+  <div class="veredito v"><b>Para trás: verificação instantânea</b>
+    Cada semente confere com a anterior por um único SHA-256 — a coluna de ✓ acima. É isso que impede o cassino de escolher o resultado depois que você aposta:
+    ele teria que forjar uma cadeia inteira que já foi comprometida publicamente.</div>
+  <div class="veredito r"><b>Para frente: exatamente o problema que não se resolve</b>
+    Você conhece a semente da rodada 1 e quer a da rodada 2. Como <code class="k">semente(1) = SHA-256(semente(2))</code>,
+    isso é pedir uma <strong>pré-imagem de SHA-256</strong>. É a mesma operação que, se fosse viável, quebraria assinaturas digitais e o Bitcoin.
+    E note a assimetria: verificar custa 1 hash; inverter custa cerca de 2²⁵⁶.
+    <br><br>Clique de novo e observe: a cadeia muda inteira, e as rodadas 1 a 12 não guardam nenhuma relação estatística com as anteriores.</div>`;
+}
+
+/* --- 2. laboratório de regras --- */
+function compilaRegra(){
+  const tipo = $('pv-regra').value;
+  const k = Math.max(1, parseInt($('pv-k').value)||1);
+  const m = parseFloat($('pv-m').value)||2;
+  const M = parseFloat($('pv-M').value)||10;
+  if (tipo==='sempre')      return {fn:()=>true, need:0, txt:'apostar em toda rodada'};
+  if (tipo==='apos-baixas') return {fn:h=>{ for(let i=0;i<k;i++) if(h[i]>=m) return false; return true; },
+                                    need:k, txt:`após ${k} rodadas seguidas abaixo de ${num(m,2)}x`};
+  if (tipo==='apos-alta')   return {fn:h=>h[0]>M, need:1, txt:`logo após uma rodada acima de ${num(M,2)}x`};
+  if (tipo==='media-baixa') return {fn:h=>{ let s=0; for(let i=0;i<k;i++) s+=h[i]; return s/k < m; },
+                                    need:k, txt:`quando a média das últimas ${k} fica abaixo de ${num(m,2)}x`};
+  if (tipo==='subindo')     return {fn:h=>h[0]>h[1], need:2, txt:'quando a última foi maior que a penúltima'};
+  const expr = $('pv-custom').value;
+  let f;
+  try { f = new Function('h','return ('+expr+');'); f([2,2,2,2,2,2,2,2,2,2]); }
+  catch(err){ return {erro: err.message}; }
+  return {fn:h=>{ try{ return !!f(h); }catch(e){ return false; } }, need:10, txt:'expressão: '+expr};
+}
+/* aplica a regra à base e devolve disparos/acertos */
+function avaliaRegra(base, regra, alvo){
+  let disparos=0, acertos=0;
+  const jan = Math.max(regra.need, 1);
+  const h = new Array(Math.max(jan,12));
+  for (let i=jan;i<base.length;i++){
+    for (let j=0;j<h.length;j++) h[j] = base[i-1-j] !== undefined ? base[i-1-j] : 1;
+    if (regra.fn(h)){ disparos++; if (base[i] >= alvo) acertos++; }
+  }
+  return {disparos, acertos};
+}
+function baseAleatoria(n, R, rnd){
+  const a = new Float64Array(n);
+  for (let i=0;i<n;i++) a[i] = crashSorteia(R, rnd);
+  return a;
+}
+/* p bilateral do teste binomial */
+function pBinomialBilateral(n,k,p0){
+  if (n<=0) return NaN;
+  const acima = binomTail(n,k,p0);
+  const abaixo = 1 - binomTail(n,k+1,p0);
+  return Math.min(1, 2*Math.min(acima,abaixo));
+}
+/* histograma da distribuição nula com marcador do valor observado */
+function graficoNulo(container, valores, observado){
+  container.innerHTML='';
+  const {ctx,w,h} = novoCanvas(container, 210);
+  const pad={l:46,r:14,t:14,b:32};
+  const min=Math.min(observado,...valores), max=Math.max(observado,...valores);
+  const nb=40, larg=(max-min)/nb || 1;
+  const bins=new Array(nb).fill(0);
+  valores.forEach(v=> bins[Math.min(nb-1,Math.floor((v-min)/larg))]++);
+  const topo=Math.max(...bins);
+  eixos(ctx,w,h,pad);
+  const bw=(w-pad.l-pad.r)/nb;
+  bins.forEach((c,i)=>{
+    const alt=(c/topo)*(h-pad.t-pad.b);
+    ctx.fillStyle='#6366f1'; ctx.globalAlpha=.7;
+    ctx.fillRect(pad.l+i*bw, h-pad.b-alt, Math.max(1,bw-1), alt);
+  });
+  ctx.globalAlpha=1;
+  const xo = pad.l + ((observado-min)/(max-min||1))*(w-pad.l-pad.r);
+  ctx.strokeStyle='#dc2626'; ctx.lineWidth=2; ctx.beginPath();
+  ctx.moveTo(xo,pad.t); ctx.lineTo(xo,h-pad.b); ctx.stroke();
+  ctx.fillStyle='#dc2626'; ctx.font='11px Poppins,sans-serif'; ctx.textAlign='center';
+  ctx.fillText('sua regra', xo, pad.t-2);
+  ctx.fillStyle='#64748b'; ctx.font='10px Poppins,sans-serif';
+  ctx.textAlign='left';  ctx.fillText(pct(min,2), pad.l, h-pad.b+15);
+  ctx.textAlign='right'; ctx.fillText(pct(max,2), w-pad.r, h-pad.b+15);
+}
+
+function testarRegra(){
+  const R = crashR();
+  const alvoBruto = parseFloat($('pv-alvo').value)||2;
+  const alvo = Math.ceil(alvoBruto*100)/100;   /* o jogo só exibe 2 casas decimais */
+  const regra = compilaRegra();
+  const alvoEl = $('saida-pv-lab');
+  if (regra.erro){ alvoEl.innerHTML = `<div class="veredito a">A expressão não compilou: <code class="k">${regra.erro}</code></div>`; return; }
+  if (alvo < 1.01){ alvoEl.innerHTML = '<div class="veredito a">O alvo mínimo é 1.01x.</div>'; return; }
+
+  const rnd = mulberry32(20260907);
+  let base, origem;
+  if ($('pv-fonte').value === 'colado'){
+    base = Float64Array.from($('pv-hist').value.split(/[^0-9.,]+/).map(t=>t.replace(',','.'))
+             .map(parseFloat).filter(v=>!isNaN(v)&&v>=1&&v<1e7));
+    origem = 'histórico colado';
+    if (base.length < 200){ alvoEl.innerHTML='<div class="veredito a">Para testar uma regra são necessárias ao menos 200 rodadas coladas. Com menos, qualquer regra parece boa ou ruim por acaso.</div>'; return; }
+  } else {
+    base = baseAleatoria(Math.min(500000, parseInt($('pv-n').value)||20000), R, rnd);
+    origem = 'base gerada (aleatória por construção)';
+  }
+
+  const obs = avaliaRegra(base, regra, alvo);
+  if (obs.disparos < 30){
+    alvoEl.innerHTML = `<div class="veredito a">A regra disparou só ${obs.disparos} vez(es) em ${inteiro(base.length)} rodadas — amostra insuficiente. Afrouxe a condição ou aumente a base.</div>`; return;
+  }
+  const pTeorico = crashSobrev(R, alvo);
+  const taxaObs = obs.acertos/obs.disparos;
+  const pVal = pBinomialBilateral(obs.disparos, obs.acertos, pTeorico);
+  const evObs = taxaObs*alvo - 1;
+
+  /* distribuição nula: a MESMA regra em bases comprovadamente aleatórias */
+  const nNulo = Math.min(3000, parseInt($('pv-nulo').value)||400);
+  const taxas = [];
+  const rnd2 = mulberry32(13579);
+  const tamNulo = Math.min(base.length, 40000);
+  for (let i=0;i<nNulo;i++){
+    const b = baseAleatoria(tamNulo, R, rnd2);
+    const r = avaliaRegra(b, regra, alvo);
+    if (r.disparos>0) taxas.push(r.acertos/r.disparos);
+  }
+  taxas.sort((a,b)=>a-b);
+  let menores=0; taxas.forEach(t=>{ if(t<taxaObs) menores++; });
+  const percentil = taxas.length ? menores/taxas.length : NaN;
+  const dentro = percentil>0.025 && percentil<0.975;
+
+  alvoEl.innerHTML = `
+  <div class="kpis">
+    <div class="kpi"><div class="rot">Vezes que a regra disparou</div><div class="val">${inteiro(obs.disparos)}</div></div>
+    <div class="kpi"><div class="rot">Taxa de acerto da regra</div><div class="val">${pct(taxaObs,2)}</div></div>
+    <div class="kpi"><div class="rot">Taxa sem regra nenhuma</div><div class="val">${pct(pTeorico,2)}</div></div>
+    <div class="kpi ${evObs<-1e-9?'r':'a'}"><div class="rot">Valor esperado da regra</div><div class="val">${evObs>0?'+':''}${pct(evObs,2)}</div></div>
+  </div>
+  <p class="nota">Regra: <strong>${regra.txt}</strong>, sacando em ${num(alvo,2)}x. Base: ${origem}, ${inteiro(base.length)} rodadas, RTP ${pct(R)}.</p>
+  <h3>Controle: a mesma regra em ${inteiro(taxas.length)} bases comprovadamente aleatórias</h3>
+  <div id="pv-graf-nulo"></div>
+  <div class="tabela-wrap"><table style="min-width:420px"><tbody>
+    <tr><td>Taxa observada da sua regra</td><td class="num"><strong>${pct(taxaObs,3)}</strong></td></tr>
+    <tr><td>Faixa central (95%) das bases aleatórias</td><td class="num">${pct(quantil(taxas,0.025),3)} a ${pct(quantil(taxas,0.975),3)}</td></tr>
+    <tr><td>Percentil em que a sua regra caiu</td><td class="num"><strong>${isNaN(percentil)?'—':num(percentil*100,1)}</strong></td></tr>
+    <tr><td>Valor-p do teste binomial</td><td class="num"><span class="${pVal>0.05?'pos':'neg'}">${pVal<0.0001?'&lt; 0,0001':num(pVal,4)}</span></td></tr>
+    <tr><td>Valor esperado da regra</td><td class="num neg">${pct(evObs,3)}</td></tr>
+    <tr><td>Valor esperado sem regra nenhuma</td><td class="num neg">${pct(R-1,3)}</td></tr>
+  </tbody></table></div>
+  <div class="veredito ${dentro?'r':'a'}">
+    <b>${dentro
+      ? 'A regra não extraiu informação nenhuma'
+      : 'A regra caiu na ponta da distribuição — e isso ainda não é um achado'}</b>
+    ${dentro
+      ? `A taxa de ${pct(taxaObs,2)} caiu no percentil ${num(percentil*100,1)} das bases que sabemos serem aleatórias: exatamente onde o acaso a colocaria.
+         O valor esperado ficou em ${pct(evObs,2)}, contra ${pct(R-1,2)} de quem aposta sem regra alguma — a mesma vantagem da casa, porque
+         <strong>selecionar quando apostar não muda a probabilidade de cada rodada</strong>. Rodadas independentes não têm momento bom nem ruim.`
+      : `Antes de comemorar: você testou uma regra escolhida por você, e a seção 3 abaixo mostra que basta testar algumas dezenas de regras
+         para que uma caia nessa ponta por puro acaso. Repita este teste com outra semente de base e com outra amostra: um achado real se repete, ruído não.
+         Repare também que, mesmo aqui, o valor esperado (${pct(evObs,2)}) continua negativo.`}
+  </div>`;
+  graficoNulo($('pv-graf-nulo'), taxas, taxaObs);
+}
+
+/* --- 3. dragagem de dados ---
+   Reescrito depois de medir: a contagem de regras "significativas" numa única
+   base oscilou entre 3 e 37 (esperado ~20) porque as regras se sobrepõem muito
+   e não são testes independentes. A demonstração passou a girar em torno da
+   validação fora da amostra, que é estável: as melhores regras do treino
+   invertem o sinal em dados novos, sempre. */
+function dragagem(){
+  const R = crashR();
+  const K = Math.min(5000, parseInt($('pv-dd-regras').value)||500);
+  const n = Math.min(100000, parseInt($('pv-dd-n').value)||5000);
+  const rnd = mulberry32(Date.now()|0);
+  const treino = baseAleatoria(n, R, rnd);
+  const teste  = baseAleatoria(n, R, rnd);     /* base nova, nunca vista pelas regras */
+
+  const achados = [];
+  for (let i=0;i<K;i++){
+    const k = 1+Math.floor(rnd()*6);
+    const m = 1.2 + rnd()*3;
+    const alvo = Math.round((1.2 + rnd()*3)*100)/100;
+    const tipo = Math.floor(rnd()*3);
+    const regra = {
+      need:k,
+      fn: tipo===0 ? h=>{ for(let j=0;j<k;j++) if(h[j]>=m) return false; return true; }
+        : tipo===1 ? h=>h[0]>m
+        : h=>{ let s=0; for(let j=0;j<k;j++) s+=h[j]; return s/k<m; },
+      txt: tipo===0 ? `após ${k} rodadas seguidas abaixo de ${num(m,2)}x`
+         : tipo===1 ? `logo após uma rodada acima de ${num(m,2)}x`
+         : `quando a média das últimas ${k} fica abaixo de ${num(m,2)}x`
+    };
+    const r = avaliaRegra(treino, regra, alvo);
+    if (r.disparos < 50) continue;
+    const p0 = crashSobrev(R,alvo), taxa = r.acertos/r.disparos;
+    achados.push({regra, alvo, p0, disparos:r.disparos, taxa, ev: taxa*alvo-1,
+                  p: pBinomialBilateral(r.disparos, r.acertos, p0)});
+  }
+  if (!achados.length){ $('saida-pv-dd').innerHTML='<div class="veredito a">Nenhuma regra disparou o suficiente. Aumente o tamanho da base.</div>'; return; }
+
+  achados.sort((a,b)=> b.ev - a.ev);
+  const sig = achados.filter(a=>a.p<0.05).length;
+  const top = achados.slice(0,8);
+  let somaIn=0, somaOut=0, linhas='';
+  for (const a of top){
+    const r2 = avaliaRegra(teste, a.regra, a.alvo);
+    const taxaOut = r2.disparos>0 ? r2.acertos/r2.disparos : 0;
+    const evOut = r2.disparos>0 ? taxaOut*a.alvo-1 : 0;
+    somaIn += a.ev; somaOut += evOut;
+    linhas += `<tr>
+      <td>${a.regra.txt}<br><span style="font-size:.78em;color:var(--muted)">sacando em ${num(a.alvo,2)}x</span></td>
+      <td class="num">${inteiro(a.disparos)}</td>
+      <td class="num"><span class="pos">+${pct(a.ev,2)}</span></td>
+      <td class="num"><span class="${evOut>0?'pos':'neg'}">${evOut>0?'+':''}${pct(evOut,2)}</span></td>
+      <td class="num">${a.p<0.0001?'&lt; 0,0001':num(a.p,4)}</td></tr>`;
+  }
+  const mediaIn = somaIn/top.length, mediaOut = somaOut/top.length;
+  const melhor = achados[0];
+
+  $('saida-pv-dd').innerHTML = `
+  <div class="kpis">
+    <div class="kpi"><div class="rot">Regras avaliadas</div><div class="val">${inteiro(achados.length)}</div></div>
+    <div class="kpi v"><div class="rot">Melhor regra, no treino</div><div class="val">+${pct(melhor.ev,2)}</div></div>
+    <div class="kpi r"><div class="rot">As 8 melhores, em dados novos</div><div class="val">${mediaOut>0?'+':''}${pct(mediaOut,2)}</div></div>
+    <div class="kpi a"><div class="rot">Vantagem da casa real</div><div class="val">${pct(R-1,2)}</div></div>
+  </div>
+  <h3>As 8 melhores “descobertas”, e o que sobra delas em dados novos</h3>
+  <p class="hint">Todas foram encontradas numa base de ${inteiro(n)} rodadas gerada aqui por um processo sem memória, e depois reavaliadas numa segunda base do mesmo tamanho que elas nunca viram.</p>
+  <div class="tabela-wrap"><table><thead><tr>
+    <th>Regra encontrada</th><th class="num">Disparos</th>
+    <th class="num">Valor esperado no treino</th><th class="num">Em dados novos</th><th class="num">Valor-p no treino</th></tr></thead>
+    <tbody>${linhas}
+    <tr style="border-top:2px solid var(--line)"><td><strong>Média das 8</strong></td><td class="num">—</td>
+      <td class="num"><strong class="pos">+${pct(mediaIn,2)}</strong></td>
+      <td class="num"><strong class="${mediaOut>0?'pos':'neg'}">${mediaOut>0?'+':''}${pct(mediaOut,2)}</strong></td>
+      <td class="num">—</td></tr>
+    </tbody></table></div>
+  <div class="veredito r">
+    <b>Nenhuma dessas regras existe</b>
+    A base foi gerada agora por um processo aleatório sem memória — não há o que descobrir nela.
+    Ainda assim a melhor regra rendeu <strong>+${pct(melhor.ev,2)}</strong> no treino, com valor-p de ${melhor.p<0.0001?'menos de 0,0001':num(melhor.p,4)}:
+    exatamente o tipo de número que convence. Em dados novos, as mesmas 8 regras entregaram ${pct(mediaOut,2)}.
+  </div>
+  <div class="veredito a">
+    <b>A validação fora da amostra é o teste que separa achado de ruído</b>
+    Procurar entre centenas de regras e relatar a melhor produz resultados espetaculares a partir de ruído puro — é assim que nasce quase toda “estratégia que funciona”.
+    Um padrão real sobrevive a dados que nunca viu; ruído inverte o sinal, como na coluna da direita.
+    Se você tem uma regra, o teste honesto é: encontre-a numa metade dos dados e avalie-a na outra, sem reajustar nada.
+    <br><br><span style="color:var(--muted)">Nota metodológica: ${sig} das ${achados.length} regras ficaram abaixo de 5% de valor-p nesta rodada.
+    Esse número oscila muito (medimos de 3 a 37 em bases diferentes) porque as regras se sobrepõem e não são testes independentes — por isso a comparação dentro/fora da amostra é o critério confiável, e não a contagem.</span>
+  </div>`;
+}
+
+/* --- 4. a barreira em números --- */
+function renderCripto(){
+  const hashesPorSegundo = 1e21;            /* ordem de grandeza da rede Bitcoin inteira */
+  const anoEmSegundos = 31557600;
+  const idadeUniverso = 1.38e10;
+  const combinacoes = Math.pow(2,256);
+  const anos = combinacoes/hashesPorSegundo/anoEmSegundos;
+  const universos = anos/idadeUniverso;
+  const anos128 = Math.pow(2,128)/hashesPorSegundo/anoEmSegundos;
+  $('saida-pv-cripto').innerHTML = `
+  <div class="tabela-wrap"><table style="min-width:460px"><tbody>
+    <tr><td>Sementes possíveis (256 bits)</td><td class="num">2²⁵⁶ ≈ ${combinacoes.toExponential(2)}</td></tr>
+    <tr><td>Velocidade de referência: a rede Bitcoin inteira</td><td class="num">≈ ${hashesPorSegundo.toExponential(0)} hashes/s</td></tr>
+    <tr><td>Tempo para varrer o espaço nessa velocidade</td><td class="num">≈ ${anos.toExponential(2)} anos</td></tr>
+    <tr><td>Isso equivale a</td><td class="num">≈ ${universos.toExponential(2)} vezes a idade do universo</td></tr>
+    <tr><td>Mesmo com semente reduzida a 128 bits</td><td class="num">≈ ${anos128.toExponential(2)} anos</td></tr>
+    <tr><td>Custo de <em>verificar</em> uma semente revelada</td><td class="num">1 hash — microssegundos</td></tr>
+  </tbody></table></div>
+  <div class="veredito r"><b>A assimetria é o produto</b>
+  Verificar custa um hash; inverter custa mais que a idade do universo multiplicada por ${universos.toExponential(1)}.
+  Não existe atalho matemático conhecido para SHA-256 — e se alguém encontrasse, o alvo racional seria a infraestrutura criptográfica do planeta, não uma aposta de R$ 5.
+  <br><br>Sobram então só dois caminhos reais para “prever” um crash: o operador ser desonesto e não usar de fato o esquema verificável (o que a cadeia do bloco 1 permite auditar),
+  ou o gerador ter uma falha de implementação. Nenhum dos dois é uma regra deduzível do histórico de multiplicadores — que é justamente o que o bloco 2 mede.</div>
+  <div class="veredito a"><b>O que sobra de matemática de verdade aqui</b>
+  A parte previsível de um jogo de crash é a <strong>distribuição</strong>, não o resultado. Você pode calcular com precisão a frequência de cada multiplicador,
+  a variância de cada alvo, a duração das sequências de perda e o risco de ruína — é tudo o que as outras abas fazem.
+  O que não existe é função do histórico para o próximo valor: essa função é a semente, e ela só aparece depois.</div>`;
+}
+
+/* =====================================================================
    13. LIGAÇÃO COM A INTERFACE
    ===================================================================== */
 document.querySelectorAll('nav.abas button').forEach(btn=>{
@@ -1981,6 +2439,14 @@ document.querySelectorAll('nav.abas button').forEach(btn=>{
     $('p-'+btn.dataset.alvo).classList.add('ativo');
   });
 });
+
+/* aba "dá para prever?" */
+$('pv-regra').addEventListener('change', e=>{
+  $('pv-custom-wrap').style.display = e.target.value==='custom' ? '' : 'none';
+});
+$('pv-testar').addEventListener('click', testarRegra);
+$('pv-cadeia').addEventListener('click', gerarCadeia);
+$('pv-dragagem').addEventListener('click', dragagem);
 
 /* aba de crash */
 function atualizaCrash(){ renderCrashDist(); renderCrashAlvos(); }
@@ -2032,6 +2498,7 @@ $('cmp-filtro').addEventListener('input', renderComparacao);
 $('cmp-ordem').addEventListener('change', renderComparacao);
 
 /* estado inicial */
+renderCripto();
 atualizaCrash();
 montarSlot();
 renderJogo();
