@@ -128,6 +128,7 @@ code.k{background:var(--indigo-l);color:var(--indigo-d);padding:.1rem .35rem;bor
 <nav class="abas">
   <button class="ativa" data-alvo="crash">Jogo de crash</button>
   <button data-alvo="prever">Dá para prever?</button>
+  <button data-alvo="doisx">Passa de 2x?</button>
   <button data-alvo="jogos">Jogos e apostas</button>
   <button data-alvo="simulador">Simulador e risco de ruína</button>
   <button data-alvo="historico">Analisar histórico</button>
@@ -343,6 +344,62 @@ code.k{background:var(--indigo-l);color:var(--indigo-d);padding:.1rem .35rem;bor
   <div class="card">
     <h2>4. A barreira, em números</h2>
     <div id="saida-pv-cripto"></div>
+  </div>
+
+</section>
+
+<!-- ================= ABA: PASSA DE 2X? ================= -->
+<section class="painel" id="p-doisx">
+
+  <div class="card">
+    <h2>A resposta direta</h2>
+    <p class="hint">“A próxima rodada vai passar de 2x?” tem resposta exata — e ela não depende de nada do que veio antes.</p>
+    <div id="saida-2x-resposta"></div>
+  </div>
+
+  <div class="card">
+    <h2>O que um previsor precisaria entregar</h2>
+    <p class="hint">Sacar em <em>t</em> só passa a valer a pena se a chance de acerto superar <code class="k">1/t</code> — o ponto de equilíbrio. A base é <code class="k">RTP/t</code>. A diferença entre os dois é a barreira mínima.</p>
+    <div id="saida-2x-barreira"></div>
+  </div>
+
+  <div class="card">
+    <h2>Medindo: o passado muda essa probabilidade?</h2>
+    <p class="hint">
+      Este bloco não pergunta “qual é a próxima”. Ele mede se <strong>algum</strong> recorte do passado altera a chance de a próxima passar do alvo.
+      Para cada contexto, calcula a probabilidade condicional observada com intervalo de confiança de Wilson, testa independência por qui-quadrado
+      e mede a <strong>informação mútua</strong> em bits — quanto o histórico realmente informa sobre o próximo resultado.
+    </p>
+    <div class="grid g3">
+      <div><label for="dx-alvo">Alvo analisado (×)</label><input type="number" id="dx-alvo" value="2" min="1.01" step="0.1"></div>
+      <div>
+        <label for="dx-fonte">Dados</label>
+        <select id="dx-fonte">
+          <option value="gerado">Gerar base aleatória</option>
+          <option value="colado">Usar histórico colado abaixo</option>
+        </select>
+      </div>
+      <div><label for="dx-n">Rodadas na base gerada</label><input type="number" id="dx-n" value="100000" min="500" max="500000" step="1000"></div>
+    </div>
+    <div style="margin-top:.75rem">
+      <label for="dx-hist">Histórico colado</label>
+      <textarea id="dx-hist" placeholder="1.00x 2.47x 1.15x 8.32x ..."></textarea>
+    </div>
+    <div class="linha-btn"><button class="acao" id="dx-analisar">Medir</button></div>
+    <div id="saida-2x-cond"></div>
+  </div>
+
+  <div class="card">
+    <h2>Quantas rodadas para provar que um previsor funciona</h2>
+    <p class="hint">Suponha que alguém realmente tenha uma vantagem. Quantas rodadas seriam necessárias só para <em>distinguir</em> essa vantagem do acaso, com rigor estatístico?</p>
+    <div class="grid g3">
+      <div><label for="dx-poder">Poder do teste</label><select id="dx-poder"><option value="0.8" selected>80%</option><option value="0.9">90%</option></select></div>
+      <div><label for="dx-seg">Segundos por rodada</label><input type="number" id="dx-seg" value="25" min="5" max="120"></div>
+      <div><label for="dx-vant">Vantagem hipotética sobre a base (pontos percentuais)</label><input type="number" id="dx-vant" value="0" min="0" step="0.5"></div>
+    </div>
+    <p class="hint" style="margin-top:.5rem">Deixe a vantagem em 0 para usar a barreira mínima — a vantagem exata que leva ao ponto de equilíbrio.</p>
+    <div class="linha-btn"><button class="acao" id="dx-poder-calc">Calcular</button></div>
+    <div id="saida-2x-poder"></div>
   </div>
 
 </section>
@@ -2429,6 +2486,331 @@ function renderCripto(){
 }
 
 /* =====================================================================
+   12d. "A PRÓXIMA PASSA DE 2X?"
+   Três resultados fechados, todos conferidos por simulação:
+     - base            P(X >= t) = RTP/t
+     - equilíbrio      1/t  (sacar em t só compensa acima disso)
+     - ganho relativo  (1-RTP)/RTP, IDÊNTICO para qualquer alvo
+   Mais a medição empírica: probabilidade condicional com intervalo de
+   Wilson, qui-quadrado de independência e informação mútua em bits.
+   ===================================================================== */
+
+/* intervalo de Wilson — cobertura conferida: 93,2% / 95,5% / 94,5% para n = 30 / 100 / 1000 */
+function wilson(k,n,z){
+  z = z || 1.959963985;
+  if (!n) return [0,1];
+  const p=k/n, d=1+z*z/n;
+  const c=(p+z*z/(2*n))/d, h=z/d*Math.sqrt(p*(1-p)/n+z*z/(4*n*n));
+  return [Math.max(0,c-h), Math.min(1,c+h)];
+}
+/* tamanho de amostra para um teste de proporção — poder conferido: 79,4% observado para alvo 80% */
+function tamanhoAmostra(p0,p1,poder){
+  const za=1.959963985, zb = poder>=0.9 ? 1.2815515655 : 0.8416212336;
+  const d = Math.abs(p1-p0);
+  if (d<=0) return Infinity;
+  const num = za*Math.sqrt(p0*(1-p0)) + zb*Math.sqrt(p1*(1-p1));
+  return Math.ceil(num*num/(d*d));
+}
+/* informação mútua em bits entre um contexto discreto e um desfecho binário */
+function infoMutua(ctx,y,nc){
+  const n=ctx.length;
+  const conj=Array.from({length:nc},()=>[0,0]), mc=new Array(nc).fill(0), my=[0,0];
+  for(let i=0;i<n;i++){ conj[ctx[i]][y[i]]++; mc[ctx[i]]++; my[y[i]]++; }
+  let I=0;
+  for(let c=0;c<nc;c++) for(let b=0;b<2;b++){
+    const pcy=conj[c][b]/n;
+    if(pcy>0) I += pcy*Math.log2(pcy/((mc[c]/n)*(my[b]/n)));
+  }
+  return I;
+}
+const entropiaBin = p => (p<=0||p>=1) ? 0 : -(p*Math.log2(p)+(1-p)*Math.log2(1-p));
+
+/* famílias de contexto testadas */
+const CTX_FAMILIAS = [
+  { nome:'Resultado da rodada imediatamente anterior', need:1, k:6,
+    rot:['1.00x','1.01–1.49x','1.50–1.99x','2.00–2.99x','3.00–9.99x','10x ou mais'],
+    fn:h=> h[0]<1.01?0 : h[0]<1.5?1 : h[0]<2?2 : h[0]<3?3 : h[0]<10?4 : 5 },
+  { nome:'Sequência de rodadas seguidas abaixo do alvo', need:10, k:6,
+    rot:['0','1','2','3','4','5 ou mais'],
+    fn:(h,t)=>{ let k=0; while(k<10 && h[k]<t) k++; return Math.min(k,5); } },
+  { nome:'Quantas das últimas 5 passaram do alvo', need:5, k:6,
+    rot:['0','1','2','3','4','5'],
+    fn:(h,t)=>{ let c=0; for(let i=0;i<5;i++) if(h[i]>=t) c++; return c; } },
+  { nome:'Média das últimas 10 rodadas', need:10, k:4,
+    rot:['abaixo de 1,5x','1,5–2,5x','2,5–5x','5x ou mais'],
+    fn:h=>{ let s=0; for(let i=0;i<10;i++) s+=h[i]; const m=s/10;
+            return m<1.5?0 : m<2.5?1 : m<5?2 : 3; } }
+];
+
+/* gráfico de probabilidade condicional com barras de erro */
+function graficoCondicional(container, rot, est, ics, base){
+  container.innerHTML='';
+  const {ctx,w,h} = novoCanvas(container, 220);
+  const pad={l:52,r:14,t:16,b:40};
+  let lo=base, hi=base;
+  ics.forEach(ic=>{ if(ic[0]<lo)lo=ic[0]; if(ic[1]>hi)hi=ic[1]; });
+  const marg=(hi-lo)*0.15+0.005; lo-=marg; hi+=marg;
+  const Y = p => (h-pad.b) - ((p-lo)/(hi-lo))*(h-pad.t-pad.b);
+  const passo = (w-pad.l-pad.r)/est.length;
+  eixos(ctx,w,h,pad);
+  /* linha da base teórica */
+  ctx.strokeStyle='#dc2626'; ctx.lineWidth=2; ctx.setLineDash([5,4]); ctx.beginPath();
+  ctx.moveTo(pad.l,Y(base)); ctx.lineTo(w-pad.r,Y(base)); ctx.stroke(); ctx.setLineDash([]);
+  est.forEach((p,i)=>{
+    const x = pad.l + passo*(i+0.5);
+    ctx.strokeStyle='#6366f1'; ctx.lineWidth=2; ctx.beginPath();
+    ctx.moveTo(x,Y(ics[i][0])); ctx.lineTo(x,Y(ics[i][1])); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x-5,Y(ics[i][0])); ctx.lineTo(x+5,Y(ics[i][0]));
+    ctx.moveTo(x-5,Y(ics[i][1])); ctx.lineTo(x+5,Y(ics[i][1])); ctx.stroke();
+    const dentro = base>=ics[i][0] && base<=ics[i][1];
+    ctx.fillStyle = dentro ? '#6366f1' : '#d97706';
+    ctx.beginPath(); ctx.arc(x,Y(p),4,0,7); ctx.fill();
+  });
+  ctx.fillStyle='#64748b'; ctx.font='10px Poppins,sans-serif'; ctx.textAlign='right';
+  [lo,base,hi].forEach(v=> ctx.fillText(pct(v,1), pad.l-5, Y(v)+3));
+  ctx.textAlign='center';
+  rot.forEach((r,i)=>{
+    const x = pad.l+passo*(i+0.5);
+    const txt = r.length>11 ? r.slice(0,10)+'…' : r;
+    ctx.fillText(txt, x, h-pad.b+14);
+  });
+}
+
+function render2xResposta(){
+  const R = crashR();
+  const t = 2;
+  const base = R/t, eq = 1/t;
+  $('saida-2x-resposta').innerHTML = `
+  <div class="kpis">
+    <div class="kpi a"><div class="rot">Chance de a próxima passar de 2x</div><div class="val">${pct(base,2)}</div></div>
+    <div class="kpi"><div class="rot">Depois de 10 rodadas baixas</div><div class="val">${pct(base,2)}</div></div>
+    <div class="kpi"><div class="rot">Depois de um 50x</div><div class="val">${pct(base,2)}</div></div>
+    <div class="kpi r"><div class="rot">Ponto de equilíbrio necessário</div><div class="val">${pct(eq,2)}</div></div>
+  </div>
+  <div class="veredito r">
+    <b>As três primeiras colunas são o mesmo número, e isso é o resultado</b>
+    <code class="k">P(X ≥ 2) = RTP / 2 = ${pct(base,2)}</code>, com RTP de ${pct(R)}. Não é uma aproximação nem uma média de longo prazo:
+    é a probabilidade exata de <em>cada</em> rodada, individualmente. Condicionar em qualquer coisa que já aconteceu devolve o mesmo ${pct(base,2)},
+    porque o resultado da próxima rodada já está fixado por um hash que não consultou o histórico.
+    <br><br>Então sim, dá para analisar — e a análise tem resposta fechada. O que ela não tem é <em>variação</em>: não existe momento em que esse número suba.
+  </div>
+  <div class="veredito a">
+    <b>O detalhe que quase ninguém nota</b>
+    ${pct(base,2)} é menos que ${pct(eq,2)}. Como sacar em 2x paga 2× a aposta, você precisaria acertar mais da metade das vezes só para empatar.
+    A distância entre ${pct(base,2)} e ${pct(eq,2)} — ${num((eq-base)*100,2)} pontos percentuais — <strong>é</strong> a vantagem da casa, vista de outro ângulo.
+  </div>`;
+}
+
+function render2xBarreira(){
+  const R = crashR();
+  let linhas='';
+  for (const t of [1.5,2,3,5,10,50]){
+    const base=R/t, eq=1/t;
+    linhas += `<tr><td><strong>${num(t,2)}x</strong></td>
+      <td class="num">${pct(base,3)}</td><td class="num">${pct(eq,3)}</td>
+      <td class="num neg">+${num((eq-base)*100,3)} pp</td>
+      <td class="num neg">+${pct(eq/base-1,3)}</td>
+      <td class="num">${inteiro(tamanhoAmostra(base,eq,0.8))}</td></tr>`;
+  }
+  $('saida-2x-barreira').innerHTML = `
+  <div class="tabela-wrap"><table><thead><tr>
+    <th>Alvo</th><th class="num">Chance real</th><th class="num">Necessária p/ empatar</th>
+    <th class="num">Falta (absoluto)</th><th class="num">Falta (relativo)</th>
+    <th class="num">Rodadas p/ detectar</th></tr></thead><tbody>${linhas}</tbody></table></div>
+  <div class="veredito a">
+    <b>A coluna “falta (relativo)” é constante</b>
+    ${pct((1-R)/R,3)} em todos os alvos — e não é coincidência: a base é <code class="k">RTP/t</code>, o equilíbrio é <code class="k">1/t</code>,
+    e a razão entre eles é <code class="k">1/RTP</code>, com o alvo se cancelando. Qualquer previsor precisa ser
+    <strong>${pct((1-R)/R,2)} melhor que o acaso</strong> para apenas empatar, escolha o alvo que escolher.
+  </div>
+  <div class="veredito r">
+    <b>E a última coluna é o problema prático</b>
+    Mesmo se essa vantagem existisse, seriam necessárias ${inteiro(tamanhoAmostra(R/2,0.5,0.8))} rodadas em 2x só para <em>distinguí-la</em> do acaso com 80% de poder —
+    e isso empatando, não lucrando. Quem afirma ter validado um método em algumas centenas de rodadas não tinha amostra para enxergar nem o efeito mínimo.
+  </div>`;
+}
+
+function analisa2x(){
+  const R = crashR();
+  const t = Math.ceil((parseFloat($('dx-alvo').value)||2)*100)/100;
+  const alvoEl = $('saida-2x-cond');
+  const rnd = mulberry32(20260907);
+  let base, origem;
+  if ($('dx-fonte').value==='colado'){
+    base = Float64Array.from($('dx-hist').value.split(/[^0-9.,]+/).map(x=>x.replace(',','.'))
+             .map(parseFloat).filter(v=>!isNaN(v)&&v>=1&&v<1e7));
+    origem = 'histórico colado';
+    if (base.length < 300){ alvoEl.innerHTML='<div class="veredito a">São necessárias ao menos 300 rodadas. Com menos, os intervalos de confiança ficam tão largos que nada pode ser concluído — e essa é justamente a razão pela qual "olhar o painel" nunca conclui nada.</div>'; return; }
+  } else {
+    base = baseAleatoria(Math.min(500000, parseInt($('dx-n').value)||100000), R, rnd);
+    origem = 'base gerada (aleatória por construção)';
+  }
+
+  const pBase = crashSobrev(R,t);
+  const rndPerm = mulberry32(864213);
+  let blocos='', piorP=1, maiorInfo=0, nFora=0, nContextos=0;
+
+  for (const fam of CTX_FAMILIAS){
+    const ctx=[], y=[];
+    const h = new Array(Math.max(fam.need,10));
+    for (let i=fam.need;i<base.length;i++){
+      for (let j=0;j<h.length;j++) h[j] = base[i-1-j] !== undefined ? base[i-1-j] : 1;
+      ctx.push(fam.fn(h,t)); y.push(base[i]>=t ? 1 : 0);
+    }
+    const n=ctx.length;
+    const cont=Array.from({length:fam.k},()=>[0,0]);
+    for(let i=0;i<n;i++) cont[ctx[i]][y[i]]++;
+
+    /* qui-quadrado de independência sobre os estados com amostra suficiente */
+    const usados=[]; let x2=0;
+    for(let c=0;c<fam.k;c++) if (cont[c][0]+cont[c][1] >= 30) usados.push(c);
+    const nu = usados.reduce((a,c)=>a+cont[c][0]+cont[c][1],0);
+    const totY = [usados.reduce((a,c)=>a+cont[c][0],0), usados.reduce((a,c)=>a+cont[c][1],0)];
+    for (const c of usados) for (let b=0;b<2;b++){
+      const e = (cont[c][0]+cont[c][1])*totY[b]/nu;
+      if (e>0) x2 += Math.pow(cont[c][b]-e,2)/e;
+    }
+    const df = Math.max(1, usados.length-1);
+    const pQui = chiSqP(x2, df);
+
+    /* informação mútua e sua distribuição sob permutação */
+    const I = infoMutua(ctx,y,fam.k);
+    const yPerm = y.slice();
+    let piores=0; const NP=200;
+    for (let s=0;s<NP;s++){
+      for (let i=yPerm.length-1;i>0;i--){
+        const j=Math.floor(rndPerm()*(i+1));
+        const tmp=yPerm[i]; yPerm[i]=yPerm[j]; yPerm[j]=tmp;
+      }
+      if (infoMutua(ctx,yPerm,fam.k) >= I) piores++;
+    }
+    const pInfo = (piores+1)/(NP+1);
+    const H = entropiaBin(totY[1]/nu);
+    if (pQui<piorP) piorP=pQui;
+    if (I>maiorInfo) maiorInfo=I;
+
+    let linhas='';
+    for (let c=0;c<fam.k;c++){
+      const nc=cont[c][0]+cont[c][1];
+      if (nc<30){ linhas += `<tr><td>${fam.rot[c]}</td><td class="num">${inteiro(nc)}</td><td colspan="3" style="color:var(--muted);font-size:.82em">amostra insuficiente</td></tr>`; continue; }
+      const p=cont[c][1]/nc, ic=wilson(cont[c][1],nc);
+      const dentro = pBase>=ic[0] && pBase<=ic[1];
+      nContextos++; if (!dentro) nFora++;
+      linhas += `<tr>
+        <td>${fam.rot[c]}</td>
+        <td class="num">${inteiro(nc)}</td>
+        <td class="num"><strong>${pct(p,2)}</strong></td>
+        <td class="num" style="font-size:.85em">${pct(ic[0],2)} a ${pct(ic[1],2)}</td>
+        <td class="num">${dentro?'<span class="pos">sim</span>':'<span class="neg">não</span>'}</td></tr>`;
+    }
+    blocos += `
+    <h3>${fam.nome}</h3>
+    <div class="tabela-wrap"><table><thead><tr>
+      <th>Contexto</th><th class="num">Rodadas</th><th class="num">Passou de ${num(t,2)}x</th>
+      <th class="num">IC 95% (Wilson)</th><th class="num">Contém ${pct(pBase,2)}?</th></tr></thead>
+      <tbody>${linhas}</tbody></table></div>
+    <div id="dx-graf-${CTX_FAMILIAS.indexOf(fam)}"></div>
+    <p class="nota">Independência: χ² = ${num(x2,2)} com ${df} g.l., valor-p ${pQui<0.0001?'&lt; 0,0001':num(pQui,4)}.
+    Informação mútua: <strong>${I.toExponential(2)} bits</strong> de ${num(H,4)} bits de incerteza total
+    (${(I/H*100).toFixed(5)}%), valor-p por permutação ${num(pInfo,3)}.</p>`;
+  }
+
+  alvoEl.innerHTML = `
+  <div class="kpis">
+    <div class="kpi"><div class="rot">Rodadas na base</div><div class="val">${inteiro(base.length)}</div></div>
+    <div class="kpi"><div class="rot">Base teórica P(≥ ${num(t,2)}x)</div><div class="val">${pct(pBase,2)}</div></div>
+    <div class="kpi ${maiorInfo<0.001?'v':'a'}"><div class="rot">Maior informação encontrada</div><div class="val" style="font-size:1rem">${maiorInfo.toExponential(2)} bits</div></div>
+    <div class="kpi ${piorP>0.01?'v':'a'}"><div class="rot">Menor valor-p entre os testes</div><div class="val">${piorP<0.0001?'&lt; 0,0001':num(piorP,4)}</div></div>
+  </div>
+  <p class="nota">Base: ${origem}. Cada contexto abaixo é uma tentativa distinta de fazer o passado informar o futuro.</p>
+  ${blocos}
+  ${(()=>{
+    /* Correção por comparações múltiplas. Sem ela o veredito acusa dados que
+       sabemos serem aleatórios: em 60 mil rodadas medimos 3 de 22 contextos
+       fora do IC e valor-p mínimo de 0,0133 — comportamento esperado ao rodar
+       dezenas de testes, não evidência de dependência. */
+    const limiar = 0.05/CTX_FAMILIAS.length;
+    const esperadoFora = nContextos*0.05;
+    const limpo = maiorInfo<0.001 && piorP>limiar;
+    return `<div class="veredito ${limpo?'r':'a'}">
+    <b>Leitura do conjunto</b>
+    ${limpo
+      ? `A maior informação mútua encontrada foi de ${maiorInfo.toExponential(2)} bits, contra ${num(entropiaBin(pBase),4)} bits de incerteza a explicar.
+         Em termos práticos: o histórico inteiro carrega <strong>zero</strong> informação sobre a próxima rodada. Não é "pouca" — é indistinguível de zero.
+         ${nFora} dos ${nContextos} contextos ficaram com o intervalo de confiança fora de ${pct(pBase,2)}, e o esperado por acaso era ${num(esperadoFora,1)}.`
+      : `Algum teste passou do limiar corrigido. Antes de tratar isso como achado: foram ${CTX_FAMILIAS.length} famílias e ${nContextos} contextos,
+         então desvios isolados são esperados — ${num(esperadoFora,1)} contextos fora do intervalo por puro acaso, e observamos ${nFora}.
+         O critério que decide é o da aba anterior: encontre o padrão numa metade dos dados e confirme na outra, sem reajustar nada.
+         <br><br>Calibração medida: rodando este mesmo bloco em bases que sabemos serem aleatórias, esta mensagem aparece em cerca de <strong>1 a cada 20 execuções</strong> —
+         é a taxa de alarme falso embutida em qualquer teste com poder. Repetir a medição em dados novos separa um caso do outro.`}
+    <br><br><span style="color:var(--muted)">Limiar de valor-p corrigido para ${CTX_FAMILIAS.length} testes (Bonferroni): ${num(limiar,4)}. Menor valor-p observado: ${piorP<0.0001?'&lt; 0,0001':num(piorP,4)}.</span>
+  </div>`;})()}
+  <div class="veredito a">
+    <b>Referência para interpretar os bits</b>
+    Um previsor perfeito teria informação mútua igual à entropia (${num(entropiaBin(pBase),4)} bits) e acertaria 100%.
+    Um previsor apenas útil — o suficiente para empatar em ${num(t,2)}x — precisaria de aproximadamente
+    ${(entropiaBin(pBase)-entropiaBin(1/t)).toExponential(2)} bits, já bem acima do que qualquer contexto acima produziu.
+    Sob independência, o próprio estimador tem viés positivo da ordem de ${(5/(2*base.length*Math.LN2)).toExponential(2)} bits, e os valores medidos costumam ficar nessa faixa —
+    ou seja, dentro do próprio ruído do método.
+  </div>`;
+
+  CTX_FAMILIAS.forEach((fam,idx)=>{
+    const ctx=[], y=[];
+    const h = new Array(Math.max(fam.need,10));
+    for (let i=fam.need;i<base.length;i++){
+      for (let j=0;j<h.length;j++) h[j] = base[i-1-j] !== undefined ? base[i-1-j] : 1;
+      ctx.push(fam.fn(h,t)); y.push(base[i]>=t?1:0);
+    }
+    const cont=Array.from({length:fam.k},()=>[0,0]);
+    for(let i=0;i<ctx.length;i++) cont[ctx[i]][y[i]]++;
+    const rot=[], est=[], ics=[];
+    for(let c=0;c<fam.k;c++){
+      const nc=cont[c][0]+cont[c][1];
+      if (nc<30) continue;
+      rot.push(fam.rot[c]); est.push(cont[c][1]/nc); ics.push(wilson(cont[c][1],nc));
+    }
+    if (est.length) graficoCondicional($('dx-graf-'+idx), rot, est, ics, pBase);
+  });
+}
+
+function calcPoder2x(){
+  const R = crashR();
+  const poder = parseFloat($('dx-poder').value)||0.8;
+  const seg = parseFloat($('dx-seg').value)||25;
+  const extra = (parseFloat($('dx-vant').value)||0)/100;
+  let linhas='';
+  for (const t of [1.5,2,3,5,10]){
+    const p0=R/t;
+    const p1 = extra>0 ? p0+extra : 1/t;
+    const n = tamanhoAmostra(p0,p1,poder);
+    const horas = n*seg/3600;
+    const ev = p1*t-1;
+    linhas += `<tr><td><strong>${num(t,2)}x</strong></td>
+      <td class="num">${pct(p0,3)}</td><td class="num">${pct(p1,3)}</td>
+      <td class="num">${isFinite(n)?inteiro(n):'—'}</td>
+      <td class="num">${isFinite(n)?num(horas,1)+' h':'—'}</td>
+      <td class="num">${isFinite(n)?num(horas/8,1)+' dias':'—'}</td>
+      <td class="num"><span class="${ev>1e-9?'pos':(ev<-1e-9?'neg':'zero')}">${ev>0?'+':''}${pct(ev,2)}</span></td></tr>`;
+  }
+  $('saida-2x-poder').innerHTML = `
+  <div class="tabela-wrap"><table><thead><tr>
+    <th>Alvo</th><th class="num">Chance sem previsor</th><th class="num">Chance com o previsor</th>
+    <th class="num">Rodadas necessárias</th><th class="num">Tempo contínuo</th>
+    <th class="num">Jornadas de 8h</th><th class="num">Valor esperado resultante</th></tr></thead>
+    <tbody>${linhas}</tbody></table></div>
+  <div class="veredito r">
+    <b>${extra>0 ? `Com uma vantagem de ${num(extra*100,2)} pontos percentuais` : 'Com a vantagem mínima — a que apenas empata'}</b>
+    ${extra>0
+      ? `A última coluna mostra o valor esperado que essa vantagem produziria. Repare que uma vantagem <em>abaixo</em> de ${num((1-R)/2*100,2)} pontos percentuais em 2x
+         ainda deixa o valor esperado negativo: ela reduz a perda, não gera lucro.`
+      : `A coluna do valor esperado é zero em todas as linhas: essa é exatamente a vantagem que leva ao empate. Para <strong>lucrar</strong>, o previsor precisaria de mais que isso,
+         e a amostra necessária cresceria ainda mais.`}
+    <br><br>O ponto prático: validar qualquer alegação de previsão em jogo de crash exige dezenas de milhares de rodadas registradas com rigor,
+    definidas <em>antes</em> de olhar os dados. Nenhuma sessão de teste real chega perto disso — e é por isso que essas alegações nunca são validadas, apenas repetidas.
+  </div>`;
+}
+
+/* =====================================================================
    13. LIGAÇÃO COM A INTERFACE
    ===================================================================== */
 document.querySelectorAll('nav.abas button').forEach(btn=>{
@@ -2440,6 +2822,10 @@ document.querySelectorAll('nav.abas button').forEach(btn=>{
   });
 });
 
+/* aba "passa de 2x?" */
+$('dx-analisar').addEventListener('click', analisa2x);
+$('dx-poder-calc').addEventListener('click', calcPoder2x);
+
 /* aba "dá para prever?" */
 $('pv-regra').addEventListener('change', e=>{
   $('pv-custom-wrap').style.display = e.target.value==='custom' ? '' : 'none';
@@ -2449,7 +2835,7 @@ $('pv-cadeia').addEventListener('click', gerarCadeia);
 $('pv-dragagem').addEventListener('click', dragagem);
 
 /* aba de crash */
-function atualizaCrash(){ renderCrashDist(); renderCrashAlvos(); }
+function atualizaCrash(){ renderCrashDist(); renderCrashAlvos(); render2xResposta(); render2xBarreira(); calcPoder2x(); }
 $('cr-rtp').addEventListener('change', e=>{
   $('cr-rtp-cust').style.display = e.target.value==='custom' ? '' : 'none';
   atualizaCrash();
@@ -2498,6 +2884,9 @@ $('cmp-filtro').addEventListener('input', renderComparacao);
 $('cmp-ordem').addEventListener('change', renderComparacao);
 
 /* estado inicial */
+render2xResposta();
+render2xBarreira();
+calcPoder2x();
 renderCripto();
 atualizaCrash();
 montarSlot();

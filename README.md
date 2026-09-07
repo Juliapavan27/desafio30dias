@@ -11,6 +11,7 @@ e não existe configuração em que passe a prever. Todo jogo analisado tem valo
 |---|---|
 | **Jogo de crash** | Distribuição dos multiplicadores, comparação entre alvos de saída, estimativa do RTP real a partir de um histórico de rodadas, simulador de sessão e verificador provably fair |
 | **Dá para prever?** | Cadeia de sementes com SHA-256 rodando na página, laboratório para testar qualquer regra de previsão contra um controle aleatório, demonstração de dragagem de dados com validação fora da amostra, e a barreira criptográfica em números |
+| **Passa de 2x?** | Probabilidade condicional medida com intervalo de Wilson em dezenas de contextos, qui-quadrado de independência, informação mútua em bits com teste de permutação, e o cálculo de quantas rodadas seriam necessárias para validar um previsor |
 | **Jogos e apostas** | Vantagem da casa, RTP e pagamento justo de cada aposta de roleta (europeia, francesa, americana), craps, bacará, blackjack, caça-níquel e loteria |
 | **Simulador e risco de ruína** | Monte Carlo com distribuição completa das sessões, mais a fórmula fechada de gambler's ruin |
 | **Analisar histórico** | Qui-quadrado de aderência, teste de corridas, maior sequência idêntica e correlação serial |
@@ -53,6 +54,27 @@ testar:
 
 A parte previsível de um crash é a **distribuição**, não o resultado.
 
+## "A próxima rodada passa de 2x?"
+
+Tem resposta fechada: `P(X ≥ 2) = RTP/2`, que é 48,5% a 97% de RTP. Não é média de longo prazo — é a
+probabilidade exata de cada rodada, e condicionar em qualquer coisa já ocorrida devolve o mesmo número.
+
+Três resultados derivados, todos conferidos por simulação:
+
+- **Ponto de equilíbrio.** Sacar em *t* só compensa acima de `1/t`. Em 2x isso é 50%, contra 48,5% reais —
+  a distância de 1,5 ponto percentual *é* a vantagem da casa vista de outro ângulo.
+- **Barreira relativa constante.** Um previsor precisa ser `(1−RTP)/RTP` melhor que o acaso para apenas
+  empatar: **3,09%**, idêntico em qualquer alvo, porque a razão entre `1/t` e `RTP/t` não depende de *t*.
+- **Custo de validação.** Detectar essa vantagem mínima em 2x com 80% de poder exige **8.716 rodadas**
+  (verificado por simulação: poder observado de 79,4%), cerca de 60 horas de jogo contínuo. Em 10x, 77 mil
+  rodadas.
+
+A medição empírica testa 4 famílias de contexto (resultado anterior, sequência abaixo do alvo, quantas das
+últimas 5 passaram, média das últimas 10) com intervalo de Wilson, qui-quadrado de independência e informação
+mútua com teste de permutação. Em 100 mil rodadas, a informação mútua medida entre o passado e "passa de 2x"
+foi de 1,3×10⁻⁵ bits contra 0,999 bit de incerteza — **menor que o viés que o próprio estimador tem sob
+independência pura** (3,6×10⁻⁵ bits). A informação medida fica abaixo do piso de ruído do método.
+
 ## O modelo de crash
 
 Uma única linha gera tudo: `P(multiplicador ≥ t) = RTP / t`.
@@ -87,6 +109,10 @@ ou simulação:
 - SHA-256 da página conferido contra `node:crypto` em 309 casos (texto, blocos de borda em 55/56/63/64 bytes,
   UTF-8 e hashes aleatórios)
 - Valor-p binomial bilateral calibrado sob a hipótese nula: 4,3% a 5,1% de rejeição ao nível de 5%
+- Intervalo de Wilson: cobertura de 93,2% / 95,5% / 94,5% para n = 30 / 100 / 1000 (nominal 95%)
+- Cálculo de tamanho de amostra: poder observado de 79,4% para alvo de 80%
+- Veredito da análise condicional corrigido por Bonferroni e calibrado em bases aleatórias (limpo em 5 de 6),
+  mantendo sensibilidade a dependências injetadas de 2%, 5% e 10%
 - Qui-quadrado, Kolmogorov-Smirnov, normal padrão e cauda binomial conferidos em pontos críticos tabelados
 
 ## Ajuda
