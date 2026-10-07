@@ -1,0 +1,760 @@
+Oi.
+Que bom que você está aqui.
+
+Deita com calma.
+Deixa o travesseiro segurar a sua cabeça.
+Você não precisa anotar nada. Não precisa decorar nada.
+Só ouvir.
+
+Puxa o ar devagar pelo nariz...
+segura um pouquinho...
+e solta, bem devagar.
+
+Mais uma vez.
+Puxa o ar...
+e solta.
+
+[pausa]
+
+Esta é a sua revisão de Direito Tributário para a segunda fase da OAB.
+Só o que é mais importante.
+Os capítulos que a sua apostila marca com estrela, os mais cobrados pela banca.
+
+Primeiro, a linha do tempo do crédito, que diz qual peça fazer.
+Depois, legalidade e anterioridade.
+Depois, as imunidades.
+Depois, suspensão, decadência e prescrição.
+Depois, a responsabilidade do sócio.
+Depois, imposto de renda, i cê ême ésse e i ésse ésse.
+Depois, as peças.
+E no final, uma revisão bem curtinha, para você adormecer.
+
+Se você dormir no meio, está tudo bem.
+Amanhã, quando abrir a apostila, muita coisa vai parecer familiar.
+
+Relaxa os ombros.
+Solta a mandíbula.
+Vamos começar.
+Parte um.
+A linha do tempo do crédito tributário.
+
+A sua apostila diz que esta é a página mais importante de todas.
+É a linha do tempo que diz qual peça fazer.
+
+Vamos caminhar por ela, devagar.
+
+Primeiro, a hipótese de incidência.
+A lei descreve, em abstrato, a situação que gera o tributo.
+Por exemplo: ser proprietário de imóvel urbano.
+
+Depois, o fato gerador.
+A situação acontece na vida real.
+Maria é dona do imóvel no dia primeiro de janeiro.
+
+Depois, nasce a obrigação tributária.
+O dever de pagar existe, mas ainda não tem valor certo, nem cobrança.
+
+Depois, o lançamento.
+A autoridade, ou o próprio contribuinte ao declarar, constitui o crédito.
+Identifica o devedor. Calcula o valor.
+Artigo 142 do CTN.
+
+Depois, a notificação.
+O contribuinte recebe o carnê, o auto de infração, a notificação.
+
+Depois, o vencimento.
+Se a lei não disser outro prazo, trinta dias da notificação.
+
+Depois, se quiser, a impugnação administrativa.
+Enquanto ele discute, a exigibilidade fica suspensa.
+
+Depois, a constituição definitiva.
+Depois, a inscrição em dívida ativa, que gera a CDA, o título executivo.
+Depois, a execução fiscal.
+E, por fim, a penhora, ou a garantia.
+
+[pausa]
+
+Agora, a pergunta de ouro.
+Já houve lançamento?
+Já chegou notificação, auto de infração, carnê, ou declaração?
+
+Se ainda não houve lançamento, é só uma ameaça.
+A peça é preventiva.
+Mandado de segurança preventivo, ou ação declaratória.
+
+Se já houve lançamento, já é lesão.
+A peça desconstitui.
+Mandado de segurança repressivo, ou ação anulatória.
+
+Se o cliente já pagou o que não devia, ele quer o dinheiro de volta.
+Ação de repetição de indébito.
+
+Se o cliente quer pagar, mas não consegue, porque o Fisco recusa, ou porque dois entes cobram o mesmo tributo,
+ação de consignação em pagamento.
+
+Se já existe execução fiscal, o cliente precisa se defender.
+Com garantia e dentro de trinta dias, embargos à execução.
+Sem garantia, com prova só documental, exceção de pré-executividade.
+
+E se já existe processo, com uma decisão contra o cliente, a peça é um recurso.
+
+Repete comigo, baixinho, em pensamento.
+Sem lançamento, prevenir.
+Com lançamento, desconstituir.
+Pagou, restituir.
+Execução, defender.
+
+[pausa]
+
+Uma pegadinha importante.
+Declarar é lançar.
+Nos tributos por homologação, como i cê ême ésse, i pê i, imposto de renda e i ésse ésse,
+quando o próprio contribuinte declara o débito, o crédito já está constituído.
+Súmula 436 do STJ.
+Declarou e não pagou, já existe lesão.
+A peça é de desconstituição, e não declaratória.
+E o Fisco pode recusar a certidão. Súmula 446 do STJ.
+
+E no i pê tê u, a notificação é o envio do carnê.
+Súmula 397 do STJ.
+Recebeu o carnê, já houve lançamento.
+
+[pausa]
+
+Mandado de segurança, ou ação de rito comum?
+A regra do curso é usar o mandado de segurança.
+A não ser que o enunciado traga algo incompatível com ele.
+
+O mandado de segurança não admite produção de provas.
+Então, se o enunciado fala em perícia, testemunha ou laudo, é ação declaratória ou anulatória.
+
+O mandado de segurança não tem honorários.
+Então, se o cliente quer honorários, é ação de rito comum.
+
+O mandado de segurança repressivo tem prazo de cento e vinte dias da ciência do ato.
+Passou disso, é anulatória.
+
+E ao contrário.
+Se o enunciado fala em medida mais rápida, menos custosa, sem risco de honorários, com todos os documentos,
+é mandado de segurança.
+
+Antes de escrever qualquer peça, leia o enunciado no mínimo cinco vezes.
+Errar a peça zera os cinco pontos.
+Parte dois.
+Legalidade e anterioridade.
+
+Este é o tema que a banca mais cobra.
+Em quase toda peça existe uma tese de legalidade, de anterioridade, ou de imunidade.
+Quando ler o enunciado, procure sempre duas coisas.
+Qual ato criou ou aumentou o tributo. Foi lei? Foi decreto?
+E em que data ele foi publicado, e em que data foi cobrado.
+
+[pausa]
+
+Legalidade.
+Só a lei pode criar, aumentar, reduzir ou extinguir tributo.
+Só a lei define o fato gerador, a alíquota, a base de cálculo, o contribuinte e as penalidades.
+Artigo 150, inciso um, da Constituição. E artigo 97 do CTN.
+Decreto, portaria, resolução, nada disso cria tributo.
+
+Já caiu assim.
+O Prefeito, por decreto, aumentou a alíquota do i pê tê u. Viola a legalidade.
+O TCU criou uma taxa por resolução. Viola a legalidade.
+O Presidente do Tribunal de Justiça aumentou as custas por resolução. Viola a legalidade.
+
+Atualizar a base de cálculo pela inflação oficial pode ser por decreto. Não é aumento real.
+Mas, se a atualização for acima da inflação, é aumento disfarçado, e exige lei.
+Súmula 160 do STJ.
+
+O que o Executivo pode fazer sem lei?
+Alterar as alíquotas de imposto de importação, imposto de exportação, i pê i e i ó éfe, dentro dos limites da lei.
+Reduzir e restabelecer a alíquota da cíde combustíveis.
+Atualizar a base pela inflação.
+Mudar o prazo de pagamento.
+E criar obrigações acessórias.
+
+[pausa]
+
+Anterioridade.
+Ela protege você contra a surpresa.
+Quando uma lei cria ou aumenta um tributo, não pode ser aplicada na hora.
+
+São duas regras.
+A anterioridade anual: não se cobra no mesmo ano da publicação. Só a partir de primeiro de janeiro do ano seguinte.
+E a noventena: não se cobra antes de noventa dias da publicação.
+Quando as duas se aplicam, vale a que terminar por último.
+
+Um exemplo.
+Lei que aumenta o i cê ême ésse, publicada em dez de dezembro.
+Pela anual, poderia em primeiro de janeiro.
+Pela noventena, só por volta de dez de março.
+Vale a mais longa. Dez de março.
+
+[pausa]
+
+Agora, as exceções.
+Respira fundo, porque este quadro precisa morar na sua cabeça.
+
+Cobram de imediato, sem esperar nada:
+imposto de importação, imposto de exportação, i ó éfe,
+empréstimo compulsório de guerra ou calamidade,
+e imposto extraordinário de guerra.
+
+Esperam só os noventa dias:
+o i pê i,
+as contribuições da seguridade social,
+o restabelecimento da cíde e do i cê ême ésse combustíveis,
+e o imposto seletivo.
+
+Esperam só o ano seguinte:
+o imposto de renda,
+e a base de cálculo do i pê tê u e do i pê vê á.
+
+Todos os outros esperam as duas.
+
+[pausa]
+
+A maior pegadinha.
+A base de cálculo do i pê tê u e do i pê vê á é exceção à noventena.
+A alíquota não é.
+Lei de vinte de dezembro que atualiza a base do i pê tê u vale para primeiro de janeiro.
+Lei de vinte de dezembro que aumenta a alíquota do i pê tê u precisa dos noventa dias.
+Não pega o fato gerador de primeiro de janeiro.
+
+Quando a anterioridade não se aplica?
+Na redução, na isenção, na extinção de tributo. Efeito imediato, porque beneficia o contribuinte.
+E na mudança do prazo de pagamento. Súmula vinculante 50.
+
+Mas cuidado.
+Revogar isenção é aumentar tributo.
+O contribuinte volta a pagar.
+Então precisa respeitar a anterioridade anual e a noventena.
+
+[pausa]
+
+Irretroatividade.
+A lei que cria ou aumenta tributo não alcança fatos geradores anteriores.
+O lançamento usa a lei do dia do fato gerador. Artigo 144 do CTN.
+O que pode retroagir é a multa mais branda, para atos ainda não definitivamente julgados.
+Artigo 106, inciso dois, do CTN.
+O tributo, nunca retroage.
+Parte três.
+Imunidades.
+
+Imunidade é uma proibição da Constituição de tributar.
+Isenção é diferente. Isenção é uma dispensa dada por lei.
+Imunidade não se revoga por lei. Isenção, sim.
+
+[pausa]
+
+Agora, a regra de ouro.
+As imunidades do artigo 150, inciso seis, valem só para impostos.
+Só impostos.
+Não alcançam taxas.
+Não alcançam contribuição de melhoria.
+Não alcançam contribuições especiais.
+O templo paga a taxa de licenciamento.
+A editora paga pís e cofíns importação.
+Os templos pagam a contribuição de monitoramento.
+
+Vamos ver as imunidades, uma de cada vez.
+
+[pausa]
+
+A recíproca.
+Os entes não cobram impostos uns dos outros.
+Vale também para autarquias e fundações públicas, nas suas finalidades essenciais.
+E para estatais que prestam serviço público sem concorrência, como os Correios.
+Não vale para a empresa privada que arrenda imóvel público. Essa paga i pê tê u.
+
+Os templos de qualquer culto.
+Patrimônio, renda e serviços ligados às finalidades essenciais.
+Depois da Reforma, também as entidades religiosas e suas organizações assistenciais.
+E o templo que é só locatário do imóvel também não paga i pê tê u.
+
+A imunidade subjetiva.
+Partidos políticos e suas fundações.
+Sindicatos dos trabalhadores. Só dos trabalhadores. Sindicato patronal paga.
+Instituições de educação e de assistência social sem fins lucrativos.
+Os requisitos estão no artigo 14 do CTN.
+Não distribuir patrimônio ou renda.
+Aplicar os recursos no país.
+Manter escrituração regular.
+
+O imóvel da entidade imune, alugado a terceiros, continua imune ao i pê tê u,
+se o aluguel for aplicado nas finalidades essenciais.
+Súmula vinculante 52.
+
+A imunidade cultural.
+Livros, jornais, periódicos, e o papel para imprimir.
+Alcança os livros digitais e os leitores digitais.
+Alcança álbuns de figurinhas.
+Não alcança máquinas, tintas e impressoras.
+A imunidade é do livro, não da editora.
+
+[pausa]
+
+Fora do artigo 150, guarde mais uma.
+A entidade beneficente de assistência social é imune às contribuições da seguridade social.
+Artigo 195, parágrafo sétimo.
+O texto diz isentas, mas é imunidade.
+É a única imunidade de contribuição desse rol.
+
+[pausa]
+
+E as sanções políticas.
+O Fisco tem a execução fiscal para cobrar.
+Ele não pode forçar o pagamento por meios indiretos.
+Não pode interditar o estabelecimento. Súmula 70 do STF.
+Não pode apreender mercadorias. Súmula 323 do STF.
+Não pode impedir o contribuinte de trabalhar. Súmula 547 do STF.
+
+Respira.
+Imunidade genérica, só impostos.
+Sindicato, só de trabalhadores.
+Entidade beneficente, também contribuições da seguridade.
+Interditar ou apreender para cobrar, proibido.
+Parte quatro.
+O crédito tributário.
+
+Depois do lançamento, o crédito pode seguir três caminhos.
+Suspensão: o crédito existe, mas o Fisco não pode cobrar. É uma pausa.
+Extinção: o crédito deixa de existir. É o fim.
+Exclusão: o crédito nem chega a nascer.
+
+[pausa]
+
+Suspensão da exigibilidade. Artigo 151 do CTN.
+Enquanto está suspensa, o Fisco não inscreve em dívida ativa, não executa,
+e o contribuinte tem direito à certidão positiva com efeitos de negativa.
+
+O bizu é rede coco para mor.
+Vamos falar devagar.
+
+Rê é. Reclamações e recursos administrativos. Inciso três.
+A própria impugnação já suspende.
+
+Dê é. Depósito do montante integral, em dinheiro. Inciso dois.
+Só suspende se for integral e em dinheiro. Súmula 112 do STJ.
+
+Cô. Concessão de liminar em mandado de segurança. Inciso quatro.
+
+Cô. Concessão de liminar ou tutela nas outras ações. Inciso cinco.
+
+Pá. Parcelamento. Inciso seis.
+
+Mor. Moratória. Inciso um.
+
+[pausa]
+
+Qual inciso em cada peça?
+Mandado de segurança, inciso quatro.
+Declaratória e anulatória, tutela de urgência, inciso cinco.
+Consignação, depósito, inciso dois.
+Impugnação administrativa, inciso três.
+E nos embargos à execução não se pede suspensão da exigibilidade.
+Pede-se efeito suspensivo aos embargos. Artigo 919, parágrafo primeiro, do cê pê cê.
+
+Se o cliente precisa de certidão, para licitação ou para vender um imóvel,
+peça também a certidão positiva com efeitos de negativa. Artigo 206 do CTN.
+
+[pausa]
+
+Decadência e prescrição.
+Os dois prazos são de cinco anos.
+Os dois extinguem o crédito.
+E os dois só podem ser regulados por lei complementar nacional.
+Súmula vinculante 8.
+
+A diferença está no momento.
+Decadência é o prazo que o Fisco tem para lançar.
+Prescrição é o prazo que o Fisco tem para cobrar na Justiça.
+
+A decadência, em regra, começa em primeiro de janeiro do ano seguinte àquele em que o Fisco poderia lançar. Artigo 173, inciso um.
+No tributo por homologação, se o contribuinte declarou e pagou, mesmo a menos, conta da data do fato gerador. Artigo 150, parágrafo quarto.
+Se não declarou e não pagou, volta para primeiro de janeiro do ano seguinte. Súmula 555 do STJ.
+Se declarou e não pagou, não há decadência. A declaração já constituiu o crédito. Corre direto a prescrição.
+
+A prescrição conta cinco anos da constituição definitiva. Artigo 174.
+Na prática, do dia seguinte ao vencimento. Súmula 622 do STJ.
+Não conta da inscrição em dívida ativa.
+
+A prescrição é interrompida pelo despacho do juiz que ordena a citação,
+pelo protesto,
+e por qualquer ato do devedor que reconheça o débito, como o pedido de parcelamento, mesmo indeferido. Súmula 653 do STJ.
+
+[pausa]
+
+E os prazos do contribuinte.
+Repetição de indébito, cinco anos do pagamento. Artigo 168, inciso um.
+O pedido administrativo de restituição não interrompe esse prazo. Súmula 625.
+Ação anulatória da decisão administrativa que negou a restituição, dois anos. Artigo 169.
+
+[pausa]
+
+Denúncia espontânea.
+Quem confessa e paga o tributo, com juros, antes de qualquer fiscalização, fica livre da multa. Artigo 138.
+Mas não vale para o tributo que foi declarado e pago com atraso. Súmula 360 do STJ.
+
+Remissão perdoa o tributo. É extinção.
+Anistia perdoa a multa. É exclusão.
+Parte cinco.
+A responsabilidade do sócio.
+
+Nas peças de execução fiscal, a tese número um costuma ser sempre a mesma.
+O sócio não responde pela dívida da empresa.
+
+A empresa tem patrimônio próprio, separado do patrimônio dos sócios.
+A regra é: dívida da empresa se cobra da empresa.
+
+A exceção está no artigo 135, inciso três, do CTN.
+Os diretores, gerentes ou representantes respondem pessoalmente
+pelos tributos resultantes de atos praticados com excesso de poderes,
+ou com infração de lei, do contrato social ou do estatuto.
+
+[pausa]
+
+Daí saem três regras.
+
+Primeira.
+Só responde o sócio que tinha poder de gestão.
+O sócio cotista que nunca administrou não responde.
+
+Segunda.
+O mero inadimplemento não é infração à lei.
+A empresa simplesmente não pagou? Isso, sozinho, não responsabiliza o sócio.
+Súmula 430 do STJ.
+
+Terceira.
+A empresa que fecha as portas sem avisar o Fisco se presume dissolvida irregularmente.
+Aí, sim, o Fisco pode redirecionar a execução ao sócio gerente.
+Súmula 435 do STJ.
+
+[pausa]
+
+Foi a peça do exame quarenta e quatro.
+A empresa declarou o i cê ême ésse e não pagou.
+O Fisco redirecionou a execução para Mateus,
+que era sócio cotista e saiu da sociedade antes dos fatos geradores.
+Três teses.
+O mero inadimplemento não basta. Súmula 430.
+Mateus não tinha poder de gestão. Artigo 135, inciso três.
+E Mateus já tinha saído da sociedade antes dos fatos geradores.
+
+Escreva sempre artigo 135, inciso três.
+Artigo 135, caput, sozinho, não pontua.
+
+[pausa]
+
+Mais três lembretes, bem curtinhos.
+O arrematante em leilão não responde pelos tributos anteriores do imóvel. A dívida se paga com o preço.
+Na incorporação, a empresa que resulta responde pelos tributos e pelas multas. Súmula 554 do STJ.
+E o locatário não pode discutir o i pê tê u. Súmula 614 do STJ.
+Parte seis.
+Imposto de renda, i cê ême ésse e i ésse ésse.
+
+[pausa]
+
+Imposto de renda.
+É da União.
+Incide sobre acréscimo patrimonial. Artigo 43 do CTN.
+Incide até sobre renda de atividade ilícita. O dinheiro não tem cheiro.
+
+A chave de todas as questões é esta.
+Indenização não é renda.
+Indenizar é recompor o que se perdeu. Não gera acréscimo.
+
+Não incide imposto de renda sobre:
+férias não gozadas por necessidade do serviço, Súmula 125;
+licença prêmio não gozada, Súmula 136;
+indenização por adesão ao pê dê vê, Súmula 215;
+férias proporcionais mais um terço pagas na rescisão, Súmula 386;
+danos morais, Súmula 498;
+e rateio de previdência privada, até o valor das contribuições, Súmula 590.
+Doação em dinheiro também não. Doação é i tê cê ême dê.
+
+Já salário, horas extras, bônus e gratificação são renda. Incide.
+
+E o aposentado com doença grave, como câncer, tem isenção,
+ainda que a doença tenha surgido depois da aposentadoria.
+Não precisa de sintomas atuais. Súmula 627.
+Em juízo, o laudo médico oficial é dispensável. Súmula 598.
+
+[pausa]
+
+i cê ême ésse.
+É dos Estados e do Distrito Federal.
+A chave é a circulação jurídica.
+Precisa trocar o dono da mercadoria.
+
+Transferência entre estabelecimentos do mesmo dono, mesmo em Estados diferentes, não tem i cê ême ésse.
+Súmula 166 do STJ.
+
+Leasing, não incide, salvo se o bem for vendido ao arrendatário.
+Seguradora que vende salvados, não incide. Súmula vinculante 32.
+Importação, mesmo por pessoa física para uso próprio, incide. Súmula vinculante 48.
+Exportação, imune.
+Restaurante, incide sobre o valor total.
+Provedor de internet, não incide.
+Software, não é i cê ême ésse. É i ésse ésse.
+
+Benefício fiscal de i cê ême ésse só com convênio do confáz, internalizado por lei.
+E combustíveis, energia, comunicações e transporte coletivo são essenciais.
+A alíquota sobre eles não pode ser maior que a das operações em geral.
+
+[pausa]
+
+i ésse ésse.
+É dos Municípios e do Distrito Federal.
+Alíquota mínima de dois por cento.
+Alíquota máxima de cinco por cento.
+
+Onde se paga o i ésse ésse?
+Esta é a questão mais repetida.
+A regra é: no local do estabelecimento do prestador.
+
+As exceções estão no artigo 3 da lei complementar 116.
+O bizu do professor é lindo.
+Quem tem a dor de cabeça fica com o i ésse ésse.
+O Município que suporta a obra, a sujeira, o palco, o barulho.
+
+Montagem de palcos e andaimes, local da instalação.
+Obra de construção civil, local da obra.
+Demolição, local da demolição.
+Coleta de lixo, local da execução.
+Jardinagem e poda de árvores, local da execução.
+Serviços portuários, local do porto.
+Consultoria e software ficam na regra: local do prestador.
+
+Locação de bens móveis não tem i ésse ésse. É obrigação de dar. Súmula vinculante 31.
+Parte sete.
+As peças.
+
+A peça vale metade da prova. Cinco pontos.
+Vamos ver como endereçar, o esqueleto, e as peças mais cobradas.
+
+[pausa]
+
+Endereçamento.
+Três perguntas, sempre nesta ordem.
+
+Primeira: Justiça Federal ou Estadual?
+Tributo federal, como imposto de renda, i pê i, pís e cofíns, vai para a Justiça Federal.
+Tributo estadual ou municipal vai para a Justiça Estadual.
+
+Segunda: qual vara?
+Se o enunciado indicar a vara, copie. Quem não copiou já perdeu ponto.
+Juizado só se o enunciado trouxer os dois requisitos.
+Mandado de segurança e execução fiscal nunca vão ao Juizado.
+Se não for Juizado, Vara da Fazenda Pública, ou Vara Federal.
+
+Terceira: qual cidade?
+Contra a União ou o Estado, domicílio do autor.
+Contra o Município, o próprio Município.
+Mandado de segurança, sede da autoridade coatora.
+Execução fiscal e embargos, domicílio do executado.
+
+E lembre: o Tribunal Regional Federal é da região. Nunca do Estado.
+
+[pausa]
+
+O esqueleto de toda peça inicial.
+Endereçamento.
+Qualificação do autor.
+Fundamento, verbo e nome da peça, em maiúsculas.
+Qualificação do réu.
+Cabimento.
+Fatos, sem inventar nada.
+Direito, um tópico para cada tese.
+Tutela, ou liminar.
+Pedidos, com os artigos.
+Valor da causa.
+E o fechamento: local, data, advogado, número da ó á bê, com reticências.
+Nunca o seu nome.
+
+Os verbos.
+Mandado de segurança, impetrar.
+Ações, ajuizar.
+Embargos, opor.
+Exceção, contestação e contrarrazões, apresentar.
+Recursos, interpor.
+
+[pausa]
+
+Mandado de segurança.
+Protege direito líquido e certo, provado só com documentos.
+Preventivo, antes do lançamento.
+Repressivo, depois do lançamento, em até cento e vinte dias.
+Não tem provas. Não tem honorários. Súmula 512 do STF.
+Nunca vai ao Juizado.
+
+Os pedidos do mandado de segurança.
+Liminar, artigo 7, inciso três, para suspender a exigibilidade, artigo 151, inciso quatro.
+Notificação da autoridade, artigo 7, inciso um.
+Ciência ao órgão de representação, artigo 7, inciso dois.
+Intimação do Ministério Público, artigo 12.
+Concessão da segurança.
+E custas, sem honorários.
+
+[pausa]
+
+Ação anulatória.
+É a peça que mais caiu na banca.
+Desconstitui um crédito já lançado. Artigo 38 da Lei de Execução Fiscal.
+Use quando há perícia, honorários, ou passaram os cento e vinte dias.
+
+Os pedidos.
+Tutela de urgência, artigos 294 e 300 do cê pê cê, para suspender a exigibilidade, artigo 151, inciso cinco.
+Se precisar, certidão positiva com efeitos de negativa, artigo 206.
+Citação do réu.
+Não realização de audiência de conciliação.
+Provas, especialmente a pericial, quando o enunciado falar em perícia.
+Procedência, para anular o lançamento.
+Custas e honorários.
+Valor da causa.
+
+[pausa]
+
+Exceção de pré-executividade.
+Uma simples petição, nos próprios autos da execução.
+Para matéria que o juiz conhece de ofício, provada só com documentos.
+Súmula 393 do STJ.
+Não exige garantia. Não tem prazo.
+
+Use quando não há garantia, ou o prazo dos embargos já passou.
+
+O que ela não tem.
+Não tem distribuição por dependência.
+Não tem citação. Pede-se a intimação do excepto.
+Não tem provas.
+Não tem valor da causa.
+Mas tem honorários, se acolhida.
+
+No exame quarenta e quatro, quem pediu citação em vez de intimação não pontuou.
+E quem escreveu o nome errado, como ação de pré-executividade, zerou a peça.
+
+[pausa]
+
+Embargos à execução.
+Precisa de garantia do juízo e de trinta dias da intimação da penhora.
+Distribuição por dependência.
+Pede efeito suspensivo, e não suspensão da exigibilidade.
+Pede intimação da Fazenda para impugnar, e não citação.
+E não esqueça o pedido de levantamento da penhora. A banca ama esse pedido.
+
+[pausa]
+
+Agravo de instrumento.
+Contra decisão interlocutória, aquela que resolve uma questão sem encerrar o processo.
+Por exemplo, quando o juiz nega a liminar ou a tutela.
+É peça única, dirigida direto ao tribunal.
+Coloque o nome e o endereço dos advogados.
+
+Se a decisão negou algo, peça antecipação da tutela recursal.
+Se a decisão fez algo contra o cliente, peça efeito suspensivo.
+Artigo mil e dezenove, inciso um, do cê pê cê.
+
+[pausa]
+
+Apelação.
+Contra sentença.
+Duas partes: a petição de interposição ao juiz, e as razões ao tribunal.
+A apelação já tem efeito suspensivo automático, salvo as exceções.
+Pedidos: conhecimento, provimento para reformar, e inversão da sucumbência.
+Recurso não tem valor da causa.
+
+E a dica de ouro dos recursos.
+O enunciado entrega as teses.
+Ele conta por que o juiz decidiu contra o cliente.
+O seu trabalho é rebater cada fundamento da decisão.
+Parte oito.
+A revisão final.
+Bem devagar, para você adormecer.
+
+Pode fechar os olhos.
+Deixa as palavras passarem.
+
+[pausa]
+
+Sem lançamento, prevenir.
+Com lançamento, desconstituir.
+Pagou, restituir.
+Execução, defender.
+
+[pausa]
+
+Só a lei cria ou aumenta tributo.
+Anterioridade anual e noventena. Vale a que terminar por último.
+Imposto de importação, exportação e i ó éfe, cobram de imediato.
+i pê i, só noventa dias.
+Imposto de renda, só o ano seguinte.
+Base do i pê tê u e do i pê vê á, só o ano seguinte.
+A alíquota, as duas.
+
+[pausa]
+
+Imunidade genérica, só impostos.
+
+[pausa]
+
+Rede coco para mor.
+Recursos. Depósito. Liminar em mandado de segurança. Tutela nas outras ações. Parcelamento. Moratória.
+Mandado de segurança, inciso quatro.
+Anulatória e declaratória, inciso cinco.
+
+[pausa]
+
+Decadência, prazo para lançar.
+Prescrição, prazo para cobrar.
+Cinco anos. Só por lei complementar.
+
+[pausa]
+
+Mero inadimplemento não responsabiliza o sócio. Súmula 430.
+Dissolução irregular, sim. Súmula 435.
+Artigo 135, inciso três.
+
+[pausa]
+
+Indenização não é renda.
+
+[pausa]
+
+i cê ême ésse precisa de troca de dono.
+
+[pausa]
+
+i ésse ésse, quem tem a dor de cabeça fica com o i ésse ésse.
+
+[pausa]
+
+Mandado de segurança, sem provas e sem honorários.
+Exceção de pré-executividade, intimação, e não citação.
+Embargos, efeito suspensivo, e levantamento da penhora.
+
+[pausa]
+
+Os erros que zeram.
+Errar a peça.
+Errar o nome da peça.
+Identificar-se. Nunca escreva o seu nome. Advogado, reticências. Ó á bê, reticências.
+
+[pausa]
+
+E nas questões.
+Posicione-se. Argumente. Cite.
+O sim ou o não vem na primeira frase.
+Explique com as suas palavras.
+O artigo sozinho não pontua.
+
+[pausa]
+
+Leia cada enunciado no mínimo cinco vezes.
+Não decore. Entenda o processo.
+
+[pausa]
+
+Você já sabe muito mais do que imagina.
+Agora descansa.
+Boa noite.
